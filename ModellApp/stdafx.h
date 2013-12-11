@@ -45,6 +45,8 @@
 #endif
 
 
+#include "resource.h"
+
 #include <vector>;
 
 using std::vector;

@@ -386,6 +386,11 @@ BEGIN
     AFX_IDS_SCTASKLIST      "Activate Task List"
 END
 
+STRINGTABLE
+BEGIN
+    ID_REDRAW_WORLD         "Call redraw of ""world"""
+END
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 

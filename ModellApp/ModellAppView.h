@@ -17,6 +17,7 @@ public:
 
 // Operations
 public:
+	void SomeFunction();
 
 // Overrides
 public:

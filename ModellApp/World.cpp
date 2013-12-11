@@ -3,6 +3,7 @@
 
 CWorld::CWorld(int _X, int _Y, RECT& Graph, CDC* _pDC)
 {
+	//Number of lattices
 	m_SizeX = _X;
 	m_SizeY = _Y;
 
@@ -26,7 +27,7 @@ CWorld::~CWorld(void)
 {
 }
 
-void CWorld::Draw()
+void CWorld::Draw( CWnd* hWND )
 {
 	CBitmap bmp;
 	
@@ -37,15 +38,17 @@ void CWorld::Draw()
 			Lattice.Draw(m_pDC, m_Scale_X, m_Scale_Y);
 		}
 	}
+
+	
 }
 
-UINT CWorld::Live(LPVOID _steps)
+void CWorld::Live(int _steps)
 {
 	for (int i=0; i<(int)_steps; i++)
 	{
 		TimeStep();
+		
 	}
-	return 0;
 }
 
 void CWorld::TimeStep()

@@ -17,8 +17,8 @@ public:
 	CWorld(int _X, int _Y, RECT& Graph, CDC* _pDC);
 	~CWorld(void);
 
-	void Draw();
-	UINT Live(LPVOID _steps);
+	void Draw(CWnd* hWND);
+	void Live(LPVOID _steps);
 
 	void TimeStep();
 };

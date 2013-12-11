@@ -18,15 +18,22 @@
 #include "Lattice.h"
 #include "World.h"
 #include "Math.cpp"
+#include "Header.h"
 // CModellAppView
 
 IMPLEMENT_DYNCREATE(CModellAppView, CView)
 
 BEGIN_MESSAGE_MAP(CModellAppView, CView)
 	ON_COMMAND(ID_START_COMPUTATION, &CModellAppView::OnStartComputation)
+	ON_COMMAND(ID_REDRAW_WORLD, &CModellAppView::SomeFunction)
 END_MESSAGE_MAP()
 
 // CModellAppView construction/destruction
+
+void CModellAppView::SomeFunction(){
+	MessageBox(_T("Hello"));
+}
+
 
 CModellAppView::CModellAppView()
 {
@@ -81,17 +88,25 @@ CModellAppDoc* CModellAppView::GetDocument() const // non-debug version is inlin
 
 
 // CModellAppView message handlers
-
-
-void CModellAppView::OnStartComputation()
+UINT MyThreadProc( LPVOID pParam )
 {
-	
+
+	CModellAppView* Window = (CModellAppView*)pParam;
+
+	MessageBox(Window->m_hWnd,_T("Hello"),NULL,NULL);
+
 	RECT Dimens;
-	this->GetClientRect(&Dimens);
-	CClientDC aDC(this);
+	Window->GetClientRect(&Dimens);
+	CClientDC aDC(Window);
 
 	CWorld* World = new CWorld((int)10, (int)10, Dimens, &aDC);
 
-
-	World->Draw();
+	World->Draw(NULL);
+	return 0;   // thread completed successfully
 }
+
+void CModellAppView::OnStartComputation()
+{
+	AfxBeginThread(MyThreadProc,this);
+}
+
