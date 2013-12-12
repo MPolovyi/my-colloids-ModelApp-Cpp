@@ -62,7 +62,7 @@ public:
 	double GetMacroDensity();
 
 	void UpdateDensity();
-
+	void NewF(double nF,int i);
 	vector<double> MacroVelocity();
 
 private:

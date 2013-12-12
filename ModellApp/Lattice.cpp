@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Lattice.h"
-
+#include "World.h"
 
 CLattice::CLattice(void)
 {
@@ -120,6 +120,90 @@ double* CLattice::Force()
 	delete tmp;
 	return m_Force;
 }
+
+void CLattice::NewF( double nF,int i )
+{
+	m_microDensityAfterTime[i] = nF;
+}
+
+void CLattice::UpdateDensity()
+{
+	m_microDensity = m_microDensityAfterTime;
+}
+
+double* CLattice::MicroDensity()
+{
+	
+	if (m_Coord.x>200 && m_Coord.x<220 && m_Coord.y>200 && m_Coord.y<800)
+	{
+		//double[] tmp = {1/54.0, 20/54.0, 26/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0};
+		double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
+		for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+		{
+			tmp[i] = m_macroDensity * tmp[i];
+		}
+
+		m_microDensity = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
+		return &m_microDensity[0];
+	}
+	else
+	{
+		double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
+		for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+		{
+			tmp[i] = m_macroDensity * tmp[i];
+		}
+
+		m_microDensity = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
+		return &m_microDensity[0];
+	}
+}
+
+double* CLattice::MicroEqDensity()
+{
+	double *tmp = new double[m_Directions.size()];
+	vector<double> Velocity = MacroVelocity();
+	if (m_flags & IS_BOUNDARY & !IS_TRANSITION)
+	{
+		Velocity[0] = 0;
+		Velocity[1] = 0;
+	}
+	for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+	{
+		// omega_i * rho * (1 + 3(e_i,u) + 9*(e_i,u)^2 / 2 - 3*u^2/2), где (e_i,u) - скал€рное произведение
+		tmp[i] = m_weights[i]*GetMacroDensity()*
+			(1 + 3*(NMath::DotProduct(m_Directions[i],Velocity) +
+			9*(std::pow(NMath::DotProduct(m_Directions[i],Velocity), 2))/2 - 3*(NMath::DotProduct(Velocity,Velocity))/2));
+	}
+	m_microEqDensity = vector<double>(tmp, tmp+sizeof(tmp)/sizeof(tmp[0]));
+	delete [] tmp;
+	return &m_microEqDensity[0];
+}
+
+vector<double>  CLattice::MacroVelocity()
+{
+	double a[] = {0,0};
+	vector<double> velocity = vector<double>(a,a+2);
+
+	double *tmp1 = new double[NEIGBOUR_GRID_COUNT];
+
+	for (int i = 1; i < NEIGBOUR_GRID_COUNT; i++)
+	{
+		tmp1[i] = (1/GetMacroDensity())*m_microDensity[i]*m_Directions[i][0];
+		velocity[0]+=tmp1[i];
+	}
+
+	
+	for (int i = 1; i < NEIGBOUR_GRID_COUNT; i++)
+	{
+		tmp1[i] = (1/GetMacroDensity())*m_microDensity[i]*m_Directions[i][1];
+		velocity[1]+=tmp1[i];
+	}
+
+	delete [] tmp1;
+	return velocity;
+}
+
 
 
 void CLattice::Shrink()
