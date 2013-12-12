@@ -3,10 +3,6 @@ Debug/*
 ModellApp/Debug/*
 
 
-
-
-
-
-*.psess
-*.cdr
+*.press
+*.vsp
 *.opensdf

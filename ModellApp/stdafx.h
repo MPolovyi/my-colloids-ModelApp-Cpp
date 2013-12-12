@@ -51,7 +51,7 @@
 
 using std::vector;
 
-const int Coord[9][2] = {
+const int Coord_Mid[9][2] = {
 	{0, 0},
 	{1, 0},
 	{0, -1},
@@ -63,4 +63,42 @@ const int Coord[9][2] = {
 	{1, 1}
 };
 
+const int Coord_Left[9][2] = {
+	{0, 0},
+	{1, 0},
+	{0, -1},
+	{0, 1},
+	{1, -1},
+	{1, 1}
+};
+
+const int Coord_Right[9][2] = {
+	{0, 0},
+	{0, -1},
+	{-1, 0},
+	{0, 1},
+	{-1, -1},
+	{-1, 1},
+};
+
+const int Coord_Bottom[9][2] = {
+	{0, 0},
+	{1, 0},
+	{0, -1},
+	{-1, 0},
+	{1, -1},
+	{-1, -1},
+};
+
+const int Coord_Top[9][2] = {
+	{0, 0},
+	{1, 0},
+	{-1, 0},
+	{0, 1},
+	{-1, 1},
+	{1, 1}
+};
+
 #define NEIGBOUR_GRID_COUNT 9
+#define NEIGHBOURS_BOUNDARY_COUNT 6
+#define NEIGHBOURS_CORNER_COUNT 4

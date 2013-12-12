@@ -19,11 +19,11 @@ namespace NMath
 	}
 
 	template<class A>
-	auto Abs(vector<A> _a) -> decltype(_a[0])
+	auto Abs(vector<A> _a) -> decltype(_a[0]*_a[0])
 	{
-		decltype(_a[0]) mod;
+		decltype(_a[0]*_a[0]) mod(0);
 
-		for (int i; i<_a.size(); i++)
+		for (int i=0; i<_a.size(); i++)
 		{
 			mod+= _a[i]*_a[i];
 		}
@@ -31,11 +31,11 @@ namespace NMath
 	}
 
 	template<class A>
-	auto Sum(vector<A> _a) -> decltype(_a[0])
+	A Sum(vector<A> _a)
 	{
-		decltype(_a[0]) mod;
+		A mod(0);
 
-		for (int i; i<_a.size(); i++)
+		for (int i=0; i<_a.size(); i++)
 		{
 			mod+= _a[i];
 		}
