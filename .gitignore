@@ -2,4 +2,7 @@ ipch/*
 Debug/*
 ModellApp/Debug/*
 
+
+*.press
+*.vsp
 *.opensdf
