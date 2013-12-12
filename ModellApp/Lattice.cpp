@@ -18,12 +18,8 @@ CLattice::CLattice(double _x, double _y, DWORD _flag)
 
 	for (int i=0;i<9;i++)
 	{
-		vector<int> row;
-		for (int j=0;j<2;j++)
-		{
-			//row.push_back(Coord[i][j]);
-		}
-		//m_Coordinates.push_back(row);
+		vector<int> row = vector<int>(Coord_Mid[i],Coord_Mid[i]+1);
+		m_Directions.push_back(row);
 	}
 
 	m_flags = _flag;

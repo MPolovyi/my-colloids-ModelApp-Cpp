@@ -26,15 +26,17 @@ private:
 	vector<double> m_outerForce;
 
 	vector<vector<int>> m_Directions;
-	vector<CLattice*> m_Neighbours;
 
+public:
+	vector<CLattice*> m_Neighbours;
+	DWORD m_flags;
 #pragma endregion LBE_params
 
-
+private:
 	POINT m_Coord;
 
 	static const short m_radius = 3;
-	DWORD m_flags;
+	
 public:
 	void Draw(CDC* pDC, int _scale_x, int _scale_y);
 

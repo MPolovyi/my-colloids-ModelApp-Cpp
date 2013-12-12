@@ -3,6 +3,8 @@
 #define IS_BOUNDARY 0x01
 #define IS_TRANSITION 0x02
 
+
+
 #include "stdafx.h"
 #include "Lattice.h"
 #include "ModellAppView.h"
@@ -26,7 +28,12 @@ public:
 
 	void Initialize();
 
+	void Generate();
+	void StreamAndCollide(vector<CLattice*> _latticeBlock, int _x, int _y);
+
+
 	void Live(int _steps);
+
 	void TimeStep();
 };
 
