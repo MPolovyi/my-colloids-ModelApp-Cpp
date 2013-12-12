@@ -13,7 +13,7 @@ CLattice::CLattice(POINT aPoint)
 
 CLattice::CLattice(double _x, double _y, DWORD _flag)
 {
-	m_Coordinates.reserve(NEIGBOUR_GRID_COUNT);
+	m_Directions.reserve(NEIGBOUR_GRID_COUNT);
 	m_Neighbours.reserve(NEIGBOUR_GRID_COUNT);
 
 	for (int i=0;i<9;i++)
@@ -61,11 +61,69 @@ void CLattice::AddToNeighbours(CLattice &_lattice,int dx, int dy, int nghb)
 	int arr[] = {dx,dy};
 	vector<int> vect(arr,arr+2);
 
-	m_Coordinates.push_back(vect);
+	m_Directions.push_back(vect);
 }
+
+
+int CLattice::Speed()
+{
+	//TODO: check whether MacV implemented correctly, or consider adding of own vector class
+
+	double spd = NMath::Abs(MacroVelocity());
+	return (int) (40 * spd/NMath::Abs(m_outerForce));
+}
+
+double CLattice::GetMacroDensity()
+{
+	return  NMath::Sum(m_microDensity);
+}
+
+//TODO: Create some method for transversion of coordinates from pixels into meters and vise versa. Consider coords in CLattice as meters.
+
+double* CLattice:: f()
+{
+	return &m_microDensity[0];
+}
+
+double* CLattice:: fEq()
+{
+	return &m_microEqDensity[0];
+}
+
+double* CLattice::Force()
+{
+	double *tmp = new double[NEIGBOUR_GRID_COUNT];
+
+	for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+	{
+		if (m_Coord.y<500)
+		{
+			double someRndY = rand() % 1;
+			vector<double> NewForce;
+			
+			NewForce.push_back(m_outerForce[0]);
+			NewForce.push_back(m_outerForce[1]);
+
+			tmp[i] = m_weights[i] * (NMath::DotProduct(NewForce , m_Directions[i]));
+		}
+		else
+		{
+			vector<double> NewForce;
+			NewForce.push_back(m_outerForce[0]);
+			NewForce.push_back(m_outerForce[1]);
+
+			tmp[i] = m_weights[i] * (NMath::DotProduct(NewForce , m_Directions[i]));
+		}
+
+	}
+	m_Force = tmp;
+	delete tmp;
+	return m_Force;
+}
+
 
 void CLattice::Shrink()
 {
-	m_Coordinates.shrink_to_fit();
+	m_Directions.shrink_to_fit();
 	m_Neighbours.shrink_to_fit();
 }

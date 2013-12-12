@@ -92,6 +92,7 @@ void CWorld::Initialize()
 	}
 
 
+
 }
 
 CWorld::~CWorld(void)

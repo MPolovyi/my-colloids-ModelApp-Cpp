@@ -17,4 +17,28 @@ namespace NMath
 
 		return DotProduct;
 	}
+
+	template<class A>
+	auto Abs(vector<A> _a) -> decltype(_a[0])
+	{
+		decltype(_a[0]) mod;
+
+		for (int i; i<_a.size(); i++)
+		{
+			mod+= _a[i]*_a[i];
+		}
+		return std::pow(mod,0.5);
+	}
+
+	template<class A>
+	auto Sum(vector<A> _a) -> decltype(_a[0])
+	{
+		decltype(_a[0]) mod;
+
+		for (int i; i<_a.size(); i++)
+		{
+			mod+= _a[i];
+		}
+		return mod;
+	}
 }

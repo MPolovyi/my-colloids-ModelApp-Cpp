@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "Math.cpp"
 
 class CLattice
 {
@@ -13,8 +14,22 @@ public:
 
 private:
 	
-	vector<vector<int>> m_Coordinates;
+#pragma region LBE_params
+
+	double m_macroDensity;
+
+
+	vector<double> m_microDensity;
+	vector<double> m_microDensityAfterTime;
+	vector<double> m_weights;
+	vector<double> m_microEqDensity;
+	vector<double> m_outerForce;
+
+	vector<vector<int>> m_Directions;
 	vector<CLattice*> m_Neighbours;
+
+#pragma endregion LBE_params
+
 
 	POINT m_Coord;
 
@@ -23,7 +38,7 @@ private:
 public:
 	void Draw(CDC* pDC, int _scale_x, int _scale_y);
 
-	void AddToNeighbours(CLattice &_lattice, int dx, int dy, int nghb);
+	
 
 	void CreatePen(CPen& aPen)
 	{
@@ -35,5 +50,28 @@ public:
 		}
 	}
 	void Shrink();
+
+#pragma region LBE_methods
+	void AddToNeighbours(CLattice &_lattice, int dx, int dy, int nghb);
+
+	int Speed();
+	double* f();
+	double* fEq();
+	double* Force();
+
+	double GetMacroDensity();
+
+	void UpdateDensity();
+
+	vector<double> MacroVelocity();
+
+private:
+	void MacroDensity(int x, int y);
+	double* MicroDensity();
+	double* MicroEqDensity();
+
+	double* m_Force;
+
+#pragma endregion LBE_methods
 };
 
