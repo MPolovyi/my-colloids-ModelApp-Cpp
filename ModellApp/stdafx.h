@@ -50,3 +50,17 @@
 #include <vector>;
 
 using std::vector;
+
+const int Coord[9][2] = {
+	{0, 0},
+	{1, 0},
+	{0, -1},
+	{-1, 0},
+	{0, 1},
+	{1, -1},
+	{-1, -1},
+	{-1, 1},
+	{1, 1}
+};
+
+#define NEIGBOUR_GRID_COUNT 9

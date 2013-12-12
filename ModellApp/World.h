@@ -1,5 +1,8 @@
 #pragma once
 
+#define IS_BOUNDARY 0x01
+#define IS_TRANSITION 0x02
+
 #include "stdafx.h"
 #include "Lattice.h"
 #include "ModellAppView.h"
@@ -11,15 +14,19 @@ private:
 
 	int m_SizeX, m_SizeY, m_Scale_X, m_Scale_Y;
 
+	CModellAppView* m_Window;
+
 	CDC* m_pDC;
 
 public:
-	CWorld(int _X, int _Y, RECT& Graph, CDC* _pDC);
+	CWorld(int _X, int _Y, CModellAppView* _wnd);
 	~CWorld(void);
 
-	void Draw(CWnd* hWND);
-	void Live(LPVOID _steps);
+	UINT Draw(LPVOID pParam);
 
+	void Initialize();
+
+	void Live(int _steps);
 	void TimeStep();
 };
 

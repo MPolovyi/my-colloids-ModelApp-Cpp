@@ -87,23 +87,6 @@ CModellAppDoc* CModellAppView::GetDocument() const // non-debug version is inlin
 #endif //_DEBUG
 
 
-// CModellAppView message handlers
-UINT MyThreadProc( LPVOID pParam )
-{
-
-	CModellAppView* Window = (CModellAppView*)pParam;
-
-	MessageBox(Window->m_hWnd,_T("Hello"),NULL,NULL);
-
-	RECT Dimens;
-	Window->GetClientRect(&Dimens);
-	CClientDC aDC(Window);
-
-	CWorld* World = new CWorld((int)10, (int)10, Dimens, &aDC);
-
-	World->Draw(NULL);
-	return 0;   // thread completed successfully
-}
 
 void CModellAppView::OnStartComputation()
 {
