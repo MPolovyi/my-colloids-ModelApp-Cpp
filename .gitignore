@@ -2,4 +2,11 @@ ipch/*
 Debug/*
 ModellApp/Debug/*
 
+
+
+
+
+
+*.psess
+*.cdr
 *.opensdf
