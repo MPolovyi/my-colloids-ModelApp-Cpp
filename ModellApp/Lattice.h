@@ -17,7 +17,7 @@ private:
 #pragma region LBE_params
 
 	double m_macroDensity;
-
+	int m_NeighCount;
 
 	vector<double> m_microDensity;
 	vector<double> m_microDensityAfterTime;
@@ -26,6 +26,7 @@ private:
 	vector<double> m_outerForce;
 
 	vector<vector<int>> m_Directions;
+
 
 public:
 	vector<CLattice*> m_Neighbours;
@@ -65,13 +66,15 @@ public:
 
 	void UpdateDensity();
 	void NewF(double nF,int i);
+
+	//TODO: check what return value is needed!!
 	vector<double> MacroVelocity();
 
 private:
 	void MacroDensity(int x, int y);
 	double* MicroDensity();
 	double* MicroEqDensity();
-
+	double* Weights();
 	double* m_Force;
 
 #pragma endregion LBE_methods

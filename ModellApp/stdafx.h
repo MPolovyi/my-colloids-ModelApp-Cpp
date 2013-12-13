@@ -99,6 +99,6 @@ const int Coord_Top[9][2] = {
 	{1, 1}
 };
 
-#define NEIGBOUR_GRID_COUNT 9
+#define NEIGHBOUR_GRID_COUNT 9
 #define NEIGHBOURS_BOUNDARY_COUNT 6
 #define NEIGHBOURS_CORNER_COUNT 4

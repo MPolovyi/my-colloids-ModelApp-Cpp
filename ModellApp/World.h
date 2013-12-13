@@ -1,7 +1,11 @@
 #pragma once
 
-#define IS_BOUNDARY 0x01
-#define IS_TRANSITION 0x02
+#define IS_BOUNDARY 0x1
+#define IS_TRANSITION 0x3
+#define IS_BOUNDARY_TOP 0x5
+#define IS_BOUNDARY_LEFT 0x7
+#define IS_BOUNDARY_RIGHT 0x9
+#define IS_BOUNDARY_BOTTOM 0x11
 
 
 

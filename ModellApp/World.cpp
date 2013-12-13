@@ -81,7 +81,7 @@ void CWorld::Initialize()
 	{
 		for (int j= 1; j< cols_count-1; j++)
 		{
-			for (int vect=0; vect<NEIGBOUR_GRID_COUNT; vect++)
+			for (int vect=0; vect<NEIGHBOUR_GRID_COUNT; vect++)
 			{
 				auto i_add = Coord_Mid[vect][0];
 				auto j_add = Coord_Mid[vect][1];
@@ -102,7 +102,7 @@ void CWorld::Initialize()
 		}
 		rows[i][j].Shrink();
 
-		j=cols_count;
+		j=cols_count-1;
 		for (int vect=0; vect<NEIGHBOURS_BOUNDARY_COUNT; vect++)
 		{
 			//TODO check this inclusion!!!!!!!!!
@@ -125,7 +125,7 @@ void CWorld::Initialize()
 		}
 		rows[i][j].Shrink();
 
-		i=rows_count;
+		i=rows_count-1;
 		for (int vect=0; vect<NEIGHBOURS_BOUNDARY_COUNT; vect++)
 		{
 			auto i_add = Coord_Right[vect][0];
@@ -156,7 +156,7 @@ void CWorld::Generate()
 void CWorld::StreamAndCollide(vector<CLattice*> _latticeBlock, int _x, int _y)
 {
 	
-	for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+	for (int i = 0; i < NEIGHBOUR_GRID_COUNT; i++)
 	{
 		if (_latticeBlock[i]->m_flags & !IS_BOUNDARY)
 			{

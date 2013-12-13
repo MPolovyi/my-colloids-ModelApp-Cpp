@@ -2,6 +2,9 @@
 #include "Lattice.h"
 #include "World.h"
 
+#define WEIGHTS {4/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/36.0, 1/36.0, 1/36.0, 1/36.0}
+#define WEIGHTS_BOUNDARY {4/9.0, 1/9.0, 1/9.0, 1/9.0, 1/36.0, 1/36.0}
+
 CLattice::CLattice(void)
 {
 }
@@ -13,9 +16,16 @@ CLattice::CLattice(POINT aPoint)
 
 CLattice::CLattice(double _x, double _y, DWORD _flag)
 {
-	m_Directions.reserve(NEIGBOUR_GRID_COUNT);
-	m_Neighbours.reserve(NEIGBOUR_GRID_COUNT);
 
+	m_Directions.reserve(NEIGHBOUR_GRID_COUNT);
+	m_Neighbours.reserve(NEIGHBOUR_GRID_COUNT);
+
+	Force();
+	Weights();
+
+	MicroDensity();
+	MicroEqDensity();
+	m_microDensityAfterTime = m_microDensity;
 	for (int i=0;i<9;i++)
 	{
 		vector<int> row = vector<int>(Coord_Mid[i],Coord_Mid[i]+1);
@@ -88,9 +98,9 @@ double* CLattice:: fEq()
 
 double* CLattice::Force()
 {
-	double *tmp = new double[NEIGBOUR_GRID_COUNT];
+	double *tmp = new double[m_NeighCount];
 
-	for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+	for (int i = 0; i < m_NeighCount; i++)
 	{
 		if (m_Coord.y<500)
 		{
@@ -134,7 +144,7 @@ double* CLattice::MicroDensity()
 	{
 		//double[] tmp = {1/54.0, 20/54.0, 26/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0};
 		double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
-		for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+		for (int i = 0; i < m_NeighCount; i++)
 		{
 			tmp[i] = m_macroDensity * tmp[i];
 		}
@@ -145,7 +155,7 @@ double* CLattice::MicroDensity()
 	else
 	{
 		double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
-		for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+		for (int i = 0; i < m_NeighCount; i++)
 		{
 			tmp[i] = m_macroDensity * tmp[i];
 		}
@@ -164,7 +174,7 @@ double* CLattice::MicroEqDensity()
 		Velocity[0] = 0;
 		Velocity[1] = 0;
 	}
-	for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+	for (int i = 0; i < m_NeighCount; i++)
 	{
 		// omega_i * rho * (1 + 3(e_i,u) + 9*(e_i,u)^2 / 2 - 3*u^2/2), где (e_i,u) - скал€рное произведение
 		tmp[i] = m_weights[i]*GetMacroDensity()*
@@ -176,21 +186,21 @@ double* CLattice::MicroEqDensity()
 	return &m_microEqDensity[0];
 }
 
-vector<double>  CLattice::MacroVelocity()
+vector<double> CLattice::MacroVelocity()
 {
 	double a[] = {0,0};
 	vector<double> velocity = vector<double>(a,a+2);
+	int length = m_Neighbours.size();
+	double *tmp1 = new double[length];
 
-	double *tmp1 = new double[NEIGBOUR_GRID_COUNT];
-
-	for (int i = 1; i < NEIGBOUR_GRID_COUNT; i++)
+	for (int i = 1; i < length; i++)
 	{
 		tmp1[i] = (1/GetMacroDensity())*m_microDensity[i]*m_Directions[i][0];
 		velocity[0]+=tmp1[i];
 	}
 
 	
-	for (int i = 1; i < NEIGBOUR_GRID_COUNT; i++)
+	for (int i = 1; i < length; i++)
 	{
 		tmp1[i] = (1/GetMacroDensity())*m_microDensity[i]*m_Directions[i][1];
 		velocity[1]+=tmp1[i];
@@ -200,10 +210,30 @@ vector<double>  CLattice::MacroVelocity()
 	return velocity;
 }
 
+double* CLattice::Weights()
+{
+	if (m_weights.size() > 0)
+	{
+		return &m_weights[0];
+	}
 
+	
+	if (m_flags & IS_BOUNDARY) 
+	{
+		double tmp[] = WEIGHTS;
+		m_weights = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
+	}
+	else
+	{
+		double tmp[] = WEIGHTS_BOUNDARY;
+		m_weights = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
+	}
+	return &m_weights[0];
+}
 
 void CLattice::Shrink()
 {
 	m_Directions.shrink_to_fit();
 	m_Neighbours.shrink_to_fit();
+	m_NeighCount = m_Neighbours.size();
 }
