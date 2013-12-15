@@ -161,6 +161,7 @@ double* CLattice::MicroEqDensity()
 {
 	double *tmp = new double[m_Directions.size()];
 	vector<double> Velocity = MacroVelocity();
+
 	if (m_flags & IS_BOUNDARY & !IS_TRANSITION)
 	{
 		Velocity[0] = 0;
@@ -173,6 +174,7 @@ double* CLattice::MicroEqDensity()
 			(1 + 3*(NMath::DotProduct(m_Directions[i],Velocity) +
 			9*(std::pow(NMath::DotProduct(m_Directions[i],Velocity), 2))/2 - 3*(NMath::DotProduct(Velocity,Velocity))/2));
 	}
+
 	m_microEqDensity = vector<double>(tmp, tmp+m_Directions.size());
 	delete [] tmp;
 	return &m_microEqDensity[0];
@@ -242,6 +244,17 @@ void CLattice::Draw(CDC* pDC, int _scale_x, int _scale_y, int _scale_velocity)
 	pDC->MoveTo(m_Coord.x, m_Coord.y);
 	pDC->LineTo(m_Coord.x + velocity[0] * _scale_velocity, m_Coord.y + velocity[1] * _scale_velocity);
 
+
+	CPen GreenPen(PS_SOLID, 2, RGB(0, 200, 50));
+	CPen* pOldPen2 = pDC->SelectObject(&GreenPen);
+	for (int i=0; i<m_NeighCount; i++)
+	{
+		pDC->MoveTo(m_Coord.x, m_Coord.y);
+		auto f1 = m_Directions[i][0] * f()[i] * 50;
+		auto f2 = m_Directions[i][1] * f()[i] * 50;
+		pDC->LineTo(m_Coord.x + f1, m_Coord.y + f2);
+	}
+	pDC->SelectObject(pOldPen2);
 
 	pDC->SelectObject(pOldPen);                // Restore the old pen
 	pDC->SelectObject(pOldBrush);              // Restore the old brush

@@ -195,26 +195,26 @@ void CWorld::StreamAndCollide(vector<CLattice*> _latticeBlock, int _x, int _y)
 	for (int i = 0; i < _latticeBlock.size(); i++)
 	{
 		if (_latticeBlock[i]->m_flags & ~IS_BOUNDARY)
+		{
+			double collision = (_latticeBlock[0]->f()[i] - _latticeBlock[0]->fEq()[i] + _latticeBlock[0]->Force()[i])/5;
+			double NewFi = _latticeBlock[0]->f()[i] - collision;
+			_latticeBlock[i]->NewF(NewFi, i);
+		}
+		else if (_latticeBlock[i]->m_flags & IS_BOUNDARY)
+		{
+			int j=0;
+			if (i == 1 || i == 2 || i == 5 || i == 6)
 			{
-				double collision = (_latticeBlock[0]->f()[i] - _latticeBlock[0]->fEq()[i] + _latticeBlock[0]->Force()[i])/5;
-				double NewFi = _latticeBlock[0]->f()[i] - collision;
-				_latticeBlock[i]->NewF(NewFi, i);
+				j = i + 2;
 			}
-			else if (_latticeBlock[i]->m_flags & IS_BOUNDARY)
+			else if (i!=0)
 			{
-				int j=0;
-				if (i == 1 || i == 2 || i == 5 || i == 6)
-				{
-					j = i + 2;
-				}
-				else if (i!=0)
-				{
-					j = i - 2;
-				}
-				double collision = (_latticeBlock[0]->f()[i] - _latticeBlock[0]->fEq()[i] + _latticeBlock[0]->Force()[i]) /5;
-				double NewFi = _latticeBlock[0]->f()[i] -collision;
-				_latticeBlock[i]->NewF(NewFi, j);
+				j = i - 2;
 			}
+			double collision = (_latticeBlock[0]->f()[i] - _latticeBlock[0]->fEq()[i] + _latticeBlock[0]->Force()[i]) /5;
+			double NewFi = _latticeBlock[0]->f()[i] -collision;
+			_latticeBlock[i]->NewF(NewFi, j);
+		}
 	}
 } 
 
