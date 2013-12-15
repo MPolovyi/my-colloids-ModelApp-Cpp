@@ -2,6 +2,9 @@
 #include "Lattice.h"
 #include "World.h"
 
+#define WEIGHTS {4/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/36.0, 1/36.0, 1/36.0, 1/36.0}
+#define WEIGHTS_BOUNDARY {4/9.0, 1/9.0, 1/9.0, 1/9.0, 1/36.0, 1/36.0}
+
 CLattice::CLattice(void)
 {
 }
@@ -13,41 +16,36 @@ CLattice::CLattice(POINT aPoint)
 
 CLattice::CLattice(double _x, double _y, DWORD _flag)
 {
-	m_Directions.reserve(NEIGBOUR_GRID_COUNT);
-	m_Neighbours.reserve(NEIGBOUR_GRID_COUNT);
 
-	for (int i=0;i<9;i++)
-	{
-		vector<int> row = vector<int>(Coord_Mid[i],Coord_Mid[i]+1);
-		m_Directions.push_back(row);
-	}
+	m_Directions.reserve(NEIGHBOUR_GRID_COUNT);
+	m_Neighbours.reserve(NEIGHBOUR_GRID_COUNT);
 
 	m_flags = _flag;
-	m_Coord.x = _x;
-	m_Coord.y = _y;
+	m_Coord.x = _x + 10;
+	m_Coord.y = _y + 10;
+
+
+	double OutForce[] = {0,0};
+	m_outerForce = vector<double>(OutForce, OutForce+2);
+}
+
+void CLattice::Init()
+{
+	Shrink();
+	
+	Weights();
+	Force();
+
+	MacroDensity(m_PhysCoord.x, m_PhysCoord.y);
+
+	MicroDensity();
+	MicroEqDensity();
+
+	m_microDensityAfterTime = m_microDensity;
 }
 
 CLattice::~CLattice(void)
 {
-}
-
-void CLattice::Draw(CDC* pDC, int _scale_x, int _scale_y)
-{
-	// Create a pen for this object and initialize it
-	CPen aPen;
-	CreatePen(aPen);
-
-	CPen* pOldPen = pDC->SelectObject(&aPen);  // Select the pen
-
-	// Select a null brush
-	CBrush* pOldBrush = dynamic_cast<CBrush*>(pDC->SelectStockObject(NULL_BRUSH));
-	
-	// Now draw the circle
-	pDC->Ellipse(_scale_x*m_Coord.x-m_radius, _scale_y*m_Coord.y+m_radius,
-				_scale_x*m_Coord.x+m_radius, _scale_y*m_Coord.y-m_radius);
-
-	pDC->SelectObject(pOldPen);                // Restore the old pen
-	pDC->SelectObject(pOldBrush);              // Restore the old brush
 }
 
 void CLattice::AddToNeighbours(CLattice &_lattice,int dx, int dy, int nghb)
@@ -60,6 +58,10 @@ void CLattice::AddToNeighbours(CLattice &_lattice,int dx, int dy, int nghb)
 	m_Directions.push_back(vect);
 }
 
+void CLattice::MacroDensity(int x, int y)
+{
+	m_macroDensity = 1;
+}
 
 int CLattice::Speed()
 {
@@ -88,9 +90,9 @@ double* CLattice:: fEq()
 
 double* CLattice::Force()
 {
-	double *tmp = new double[NEIGBOUR_GRID_COUNT];
+	double *tmp = new double[m_NeighCount];
 
-	for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+	for (int i = 0; i < m_NeighCount; i++)
 	{
 		if (m_Coord.y<500)
 		{
@@ -113,7 +115,7 @@ double* CLattice::Force()
 
 	}
 	m_Force = tmp;
-	delete tmp;
+	delete [] tmp;
 	return m_Force;
 }
 
@@ -134,7 +136,7 @@ double* CLattice::MicroDensity()
 	{
 		//double[] tmp = {1/54.0, 20/54.0, 26/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0};
 		double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
-		for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+		for (int i = 0; i < m_NeighCount; i++)
 		{
 			tmp[i] = m_macroDensity * tmp[i];
 		}
@@ -145,7 +147,7 @@ double* CLattice::MicroDensity()
 	else
 	{
 		double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
-		for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+		for (int i = 0; i < m_NeighCount; i++)
 		{
 			tmp[i] = m_macroDensity * tmp[i];
 		}
@@ -164,33 +166,33 @@ double* CLattice::MicroEqDensity()
 		Velocity[0] = 0;
 		Velocity[1] = 0;
 	}
-	for (int i = 0; i < NEIGBOUR_GRID_COUNT; i++)
+	for (int i = 0; i < m_NeighCount; i++)
 	{
 		// omega_i * rho * (1 + 3(e_i,u) + 9*(e_i,u)^2 / 2 - 3*u^2/2), где (e_i,u) - скал€рное произведение
 		tmp[i] = m_weights[i]*GetMacroDensity()*
 			(1 + 3*(NMath::DotProduct(m_Directions[i],Velocity) +
 			9*(std::pow(NMath::DotProduct(m_Directions[i],Velocity), 2))/2 - 3*(NMath::DotProduct(Velocity,Velocity))/2));
 	}
-	m_microEqDensity = vector<double>(tmp, tmp+sizeof(tmp)/sizeof(tmp[0]));
+	m_microEqDensity = vector<double>(tmp, tmp+m_Directions.size());
 	delete [] tmp;
 	return &m_microEqDensity[0];
 }
 
-vector<double>  CLattice::MacroVelocity()
+vector<double> CLattice::MacroVelocity()
 {
 	double a[] = {0,0};
 	vector<double> velocity = vector<double>(a,a+2);
+	int length = m_Neighbours.size();
+	double *tmp1 = new double[length];
 
-	double *tmp1 = new double[NEIGBOUR_GRID_COUNT];
-
-	for (int i = 1; i < NEIGBOUR_GRID_COUNT; i++)
+	for (int i = 1; i < length; i++)
 	{
 		tmp1[i] = (1/GetMacroDensity())*m_microDensity[i]*m_Directions[i][0];
 		velocity[0]+=tmp1[i];
 	}
 
 	
-	for (int i = 1; i < NEIGBOUR_GRID_COUNT; i++)
+	for (int i = 1; i < length; i++)
 	{
 		tmp1[i] = (1/GetMacroDensity())*m_microDensity[i]*m_Directions[i][1];
 		velocity[1]+=tmp1[i];
@@ -200,10 +202,56 @@ vector<double>  CLattice::MacroVelocity()
 	return velocity;
 }
 
+double* CLattice::Weights()
+{
+	if (m_weights.size() > 0)
+	{
+		return &m_weights[0];
+	}
+		
+	if (m_flags & IS_BOUNDARY)
+	{
+		double tmp[] = WEIGHTS_BOUNDARY;
+		m_weights = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
+	}
+	else
+	{
+		double tmp[] = WEIGHTS;
+		m_weights = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
+	}
+	return &m_weights[0];
+}
 
+void CLattice::Draw(CDC* pDC, int _scale_x, int _scale_y, int _scale_velocity)
+{
+	// Create a pen for this object and initialize it
+	CPen aPen;
+	CreatePen(aPen);
+
+	CPen* pOldPen = pDC->SelectObject(&aPen);  // Select the pen
+
+	// Select a null brush
+	CBrush* pOldBrush = dynamic_cast<CBrush*>(pDC->SelectStockObject(NULL_BRUSH));
+
+	// Now draw the circle
+	pDC->Ellipse(m_Coord.x-m_radius, m_Coord.y+m_radius,
+		m_Coord.x+m_radius, m_Coord.y-m_radius);
+
+	auto velocity = MacroVelocity();
+
+	pDC->MoveTo(m_Coord.x, m_Coord.y);
+	pDC->LineTo(m_Coord.x + velocity[0] * _scale_velocity, m_Coord.y + velocity[1] * _scale_velocity);
+
+
+	pDC->SelectObject(pOldPen);                // Restore the old pen
+	pDC->SelectObject(pOldBrush);              // Restore the old brush
+}
 
 void CLattice::Shrink()
 {
 	m_Directions.shrink_to_fit();
 	m_Neighbours.shrink_to_fit();
+	m_NeighCount = m_Neighbours.size();
 }
+
+

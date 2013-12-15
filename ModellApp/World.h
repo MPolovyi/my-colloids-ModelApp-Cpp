@@ -1,8 +1,13 @@
 #pragma once
 
-#define IS_BOUNDARY 0x01
-#define IS_TRANSITION 0x02
 
+#define IS_MIDDLE 0x100
+#define IS_BOUNDARY 0x1
+#define IS_TRANSITION 0x2
+#define IS_BOUNDARY_TOP 0x4
+#define IS_BOUNDARY_LEFT 0x8
+#define IS_BOUNDARY_RIGHT 0x10
+#define IS_BOUNDARY_BOTTOM 0x20
 
 
 #include "stdafx.h"
@@ -14,7 +19,7 @@ class CWorld
 private:
 	std::vector<std::vector<CLattice>> m_Grid;
 
-	int m_SizeX, m_SizeY, m_Scale_X, m_Scale_Y;
+	int m_SizeX, m_SizeY, m_Scale_X, m_Scale_Y, m_Scale_velocity;
 
 	CModellAppView* m_Window;
 
