@@ -4,6 +4,7 @@
 
 #define WEIGHTS {4/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/36.0, 1/36.0, 1/36.0, 1/36.0}
 #define WEIGHTS_BOUNDARY {4/9.0, 1/9.0, 1/9.0, 1/9.0, 1/36.0, 1/36.0}
+#define WEIGHTS_CORNER {4/9.0, 1/9.0, 1/9.0, 1/36.0}
 
 CLattice::CLattice(void)
 {
@@ -48,9 +49,21 @@ CLattice::~CLattice(void)
 {
 }
 
-void CLattice::AddToNeighbours(CLattice &_lattice,int dx, int dy, int nghb)
+void CLattice::StreamAndCollide()
 {
-	m_Neighbours.push_back(&_lattice);
+	for (int i = 0; i < m_NeighCount; i++)
+	{
+		double collision = (m_microDensity[i]  - m_microEqDensity[i] + Force()[i])/5;
+		double NewFi = m_microDensity[i] - collision;
+		m_Neighbours[i].first->NewF(NewFi, m_Neighbours[i].second);
+	}
+}
+
+
+void CLattice::AddToNeighbours(CLattice* _lattice, int dx, int dy, int nghb)
+{
+	pair<CLattice*,int> tmp(_lattice, GetIndexOfTransition(dx, dy));
+	m_Neighbours.push_back(tmp);
 
 	int arr[] = {dx,dy};
 	vector<int> vect(arr,arr+2);
@@ -162,7 +175,7 @@ double* CLattice::MicroEqDensity()
 	double *tmp = new double[m_Directions.size()];
 	vector<double> Velocity = MacroVelocity();
 
-	if (m_flags & IS_BOUNDARY & !IS_TRANSITION)
+	if (m_flags & IS_BOUNDARY & ~IS_TRANSITION)
 	{
 		Velocity[0] = 0;
 		Velocity[1] = 0;
@@ -211,7 +224,12 @@ double* CLattice::Weights()
 		return &m_weights[0];
 	}
 		
-	if (m_flags & IS_BOUNDARY)
+	if (m_flags & IS_CORNER)
+	{
+		double tmp[] = WEIGHTS_CORNER;
+		m_weights = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
+	}
+	else if (m_flags & IS_BOUNDARY)
 	{
 		double tmp[] = WEIGHTS_BOUNDARY;
 		m_weights = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
@@ -223,6 +241,7 @@ double* CLattice::Weights()
 	}
 	return &m_weights[0];
 }
+
 
 void CLattice::Draw(CDC* pDC, int _scale_x, int _scale_y, int _scale_velocity)
 {

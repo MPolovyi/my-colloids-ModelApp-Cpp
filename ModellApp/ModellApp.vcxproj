@@ -103,6 +103,7 @@
   <ItemGroup>
     <ClInclude Include="Header.h" />
     <ClInclude Include="Lattice.h" />
+    <ClInclude Include="Lattices.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="ModellApp.h" />
     <ClInclude Include="ModellAppDoc.h" />
@@ -114,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Lattice.cpp" />
+    <ClCompile Include="Lattices.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="ModellApp.cpp" />
     <ClCompile Include="ModellAppDoc.cpp" />

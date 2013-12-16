@@ -4,20 +4,19 @@
 #define IS_MIDDLE 0x100
 #define IS_BOUNDARY 0x1
 #define IS_TRANSITION 0x2
-#define IS_BOUNDARY_TOP 0x4
-#define IS_BOUNDARY_LEFT 0x8
-#define IS_BOUNDARY_RIGHT 0x10
-#define IS_BOUNDARY_BOTTOM 0x20
+#define IS_CORNER 0x4
+
 
 
 #include "stdafx.h"
 #include "Lattice.h"
 #include "ModellAppView.h"
+#include "Lattices.h"
 class CWorld
 {
 
 private:
-	std::vector<std::vector<CLattice>> m_Grid;
+	std::vector<std::vector<CLattice*>> m_Grid;
 
 	int m_SizeX, m_SizeY, m_Scale_X, m_Scale_Y, m_Scale_velocity;
 
@@ -34,7 +33,7 @@ public:
 	void Initialize();
 
 	void Generate();
-	void StreamAndCollide(vector<CLattice*> _latticeBlock, int _x, int _y);
+	void StrAndCollide(vector<pair<CLattice*, int>> _latticeBlock, int _x, int _y);
 
 
 	void Live(int _steps);

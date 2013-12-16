@@ -15,7 +15,7 @@ public:
 
 	~CLattice(void);
 
-private:
+protected:
 	
 #pragma region LBE_params
 
@@ -34,12 +34,12 @@ private:
 	vector<double> m_Velocity;
 
 public:
-	vector<CLattice*> m_Neighbours;
+	vector<pair<CLattice*,int>> m_Neighbours;
 	DWORD m_flags;
 #pragma endregion LBE_params
 
 #pragma region LBE_methods
-	void AddToNeighbours(CLattice &_lattice, int dx, int dy, int nghb);
+	virtual void AddToNeighbours(CLattice* _lattice, int dx, int dy, int nghb);
 
 	int Speed();
 	double* f();
@@ -54,17 +54,20 @@ public:
 	//TODO: check what return value is needed!!
 	vector<double> MacroVelocity();
 
-private:
+	void StreamAndCollide();
+
+protected:
 	void MacroDensity(int x, int y);
 	double* MicroDensity();
 	double* MicroEqDensity();
 	double* Weights();
 	double* m_Force;
 
+	virtual int GetIndexOfTransition(int dx, int dy){return -111;}
 #pragma endregion LBE_methods
 
 
-private:
+protected:
 	POINT m_Coord;
 
 	static const short m_radius = 2;

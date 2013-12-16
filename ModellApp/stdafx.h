@@ -48,8 +48,10 @@
 #include "resource.h"
 
 #include <vector>;
-
 using std::vector;
+
+#include <utility>
+using std::pair;
 
 const int Coord_Mid[9][2] = {
 	{0, 0},

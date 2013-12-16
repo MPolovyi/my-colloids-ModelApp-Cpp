@@ -2,6 +2,8 @@
 #include "World.h"
 
 #include <iostream>
+#include "Lattices.h"
+#include "Lattice.h"
 
         /*                   \
          *                    \ 
@@ -49,7 +51,7 @@ void CWorld::Initialize()
 	//TODO: optimize filling of grid!
 	for (int y=0; y<m_SizeY; y++)
 	{
-		vector<CLattice> Row;
+		vector<CLattice*> Row;
 		for (int x=0; x<m_SizeX; x++)
 		{
 			DWORD flag = IS_MIDDLE;
@@ -63,10 +65,14 @@ void CWorld::Initialize()
 			}
 			if ((y==0 && x==0) || (y==0 && x==m_SizeX) || (y==m_SizeY && x==0) || (y==m_SizeY && x==m_SizeX))
 			{
-				flag = (IS_BOUNDARY);
+				flag = (IS_BOUNDARY | IS_CORNER);
+				Row.push_back(new CLattice(x * m_Scale_X, y * m_Scale_Y, flag));
 			}
-
-			Row.push_back(CLattice(x * m_Scale_X, y * m_Scale_Y, flag));
+			else
+			{
+				Row.push_back( new CLattice_Mid(x * m_Scale_X, y * m_Scale_Y, flag));
+			}
+			
 		}
 		Row.shrink_to_fit();
 		m_Grid.push_back(Row);
@@ -76,7 +82,7 @@ void CWorld::Initialize()
 
 #pragma region AddNeighbours
 
-	vector<CLattice> *rows = &m_Grid[0];
+	vector<CLattice*> *rows = &m_Grid[0];
 	int rows_count = m_Grid.size();
 	int cols_count = m_Grid[0].size();
 	
@@ -88,9 +94,9 @@ void CWorld::Initialize()
 			{
 				auto x_add = Coord_Mid[vect][0];
 				auto y_add = Coord_Mid[vect][1];
-				rows[y][x].AddToNeighbours(rows[y+y_add][x+x_add], y_add, x_add, vect);
+				rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], y_add, x_add, vect);
 			}
-			rows[y][x].Init();
+			rows[y][x]->Init();
 		}
 	}
 
@@ -101,18 +107,18 @@ void CWorld::Initialize()
 		{
 			auto x_add = Coord_Left[vect][0];
 			auto y_add = Coord_Left[vect][1];
-			rows[y][x].AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
+			rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
 		}
-		rows[y][x].Init();
+		rows[y][x]->Init();
 
 		x=cols_count-1;
 		for (int vect=0; vect<NEIGHBOURS_BOUNDARY_COUNT; vect++)
 		{
 			auto x_add = Coord_Right[vect][0];
 			auto y_add = Coord_Right[vect][1];
-			rows[y][x].AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
+			rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
 		}
-		rows[y][x].Init();
+		rows[y][x]->Init();
 	}
 
 	for (int x=1; x < cols_count-1; x++)
@@ -122,44 +128,44 @@ void CWorld::Initialize()
 		{
 			auto x_add = Coord_Top[vect][0];
 			auto y_add = Coord_Top[vect][1];
-			rows[y][x].AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
+			rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
 		}
-		rows[y][x].Init();
+		rows[y][x]->Init();
 
 		y=rows_count-1;
 		for (int vect=0; vect<NEIGHBOURS_BOUNDARY_COUNT; vect++)
 		{
 			auto x_add = Coord_Bottom[vect][0];
 			auto y_add = Coord_Bottom[vect][1];
-			rows[y][x].AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
+			rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
 		}
-		rows[y][x].Init();
+		rows[y][x]->Init();
 	}
 
 	for (int vect=0; vect<NEIGHBOURS_CORNER_COUNT; vect++)
 	{
 		auto x_add = Coord_Left_Top[vect][0];
 		auto y_add = Coord_Left_Top[vect][1];
-		rows[0][0].AddToNeighbours(rows[0+y_add][0+x_add], x_add, y_add, vect);
+		rows[0][0]->AddToNeighbours(rows[0+y_add][0+x_add], x_add, y_add, vect);
 
 		x_add = Coord_Left_Bottom[vect][0];
 		y_add = Coord_Left_Bottom[vect][1];
-		rows[rows_count-1][0].AddToNeighbours(rows[rows_count-1+y_add][0+x_add], x_add, y_add, vect);
+		rows[rows_count-1][0]->AddToNeighbours(rows[rows_count-1+y_add][0+x_add], x_add, y_add, vect);
 
 		x_add = Coord_Right_Top[vect][0];
 		y_add = Coord_Right_Top[vect][1];
-		rows[0][cols_count-1].AddToNeighbours(rows[0+y_add][cols_count-1+x_add], x_add, y_add, vect);
+		rows[0][cols_count-1]->AddToNeighbours(rows[0+y_add][cols_count-1+x_add], x_add, y_add, vect);
 
 		x_add = Coord_Right_Bottom[vect][0];
 		y_add = Coord_Right_Bottom[vect][1];
-		rows[rows_count-1][cols_count-1].AddToNeighbours(rows[rows_count-1+y_add][cols_count-1+x_add], x_add, y_add, vect);
+		rows[rows_count-1][cols_count-1]->AddToNeighbours(rows[rows_count-1+y_add][cols_count-1+x_add], x_add, y_add, vect);
 		
 	}
 
-	rows[0][0].Init();
-	rows[rows_count-1][0].Init();
-	rows[0][cols_count-1].Init();
-	rows[rows_count-1][cols_count-1].Init();
+	rows[0][0]->Init();
+	rows[rows_count-1][0]->Init();
+	rows[0][cols_count-1]->Init();
+	rows[rows_count-1][cols_count-1]->Init();
 
 
 	#pragma endregion AddNeighbours
@@ -167,7 +173,7 @@ void CWorld::Initialize()
 
 void CWorld::Generate()
 {
-	vector<CLattice> *rows = &m_Grid[0];
+	vector<CLattice*> *rows = &m_Grid[0];
 	int rows_count = m_Grid.size();
 	int cols_count = m_Grid[0].size();
 
@@ -177,7 +183,7 @@ void CWorld::Generate()
 	{
 		for (int j = 1; j< cols_count-1; j++)
 		{
-			StreamAndCollide(rows[i][j].m_Neighbours, i, j);
+			rows[i][j]->StreamAndCollide();
 		}
 	}
 
@@ -185,38 +191,11 @@ void CWorld::Generate()
 	{
 		for (int j = 2; j< cols_count-2; j++)
 		{
-			rows[i][j].UpdateDensity();
+			rows[i][j]->UpdateDensity();
 		}
 	}
 }
 
-void CWorld::StreamAndCollide(vector<CLattice*> _latticeBlock, int _x, int _y)
-{
-	for (int i = 0; i < _latticeBlock.size(); i++)
-	{
-		if (_latticeBlock[i]->m_flags & ~IS_BOUNDARY)
-		{
-			double collision = (_latticeBlock[0]->f()[i] - _latticeBlock[0]->fEq()[i] + _latticeBlock[0]->Force()[i])/5;
-			double NewFi = _latticeBlock[0]->f()[i] - collision;
-			_latticeBlock[i]->NewF(NewFi, i);
-		}
-		else if (_latticeBlock[i]->m_flags & IS_BOUNDARY)
-		{
-			int j=0;
-			if (i == 1 || i == 2 || i == 5 || i == 6)
-			{
-				j = i + 2;
-			}
-			else if (i!=0)
-			{
-				j = i - 2;
-			}
-			double collision = (_latticeBlock[0]->f()[i] - _latticeBlock[0]->fEq()[i] + _latticeBlock[0]->Force()[i]) /5;
-			double NewFi = _latticeBlock[0]->f()[i] -collision;
-			_latticeBlock[i]->NewF(NewFi, j);
-		}
-	}
-} 
 
 CWorld::~CWorld(void)
 {
@@ -237,7 +216,7 @@ UINT CWorld::Draw(LPVOID pParam)
 	{
 		for (auto& Lattice : Row)
 		{
-			Lattice.Draw(m_pDC, m_Scale_X, m_Scale_Y, m_Scale_velocity);
+			Lattice->Draw(m_pDC, m_Scale_X, m_Scale_Y, m_Scale_velocity);
 		}
 	}
 	return 0;
