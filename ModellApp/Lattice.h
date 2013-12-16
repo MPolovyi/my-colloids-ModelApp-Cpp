@@ -9,7 +9,7 @@ public:
 
 	CLattice(void);
 	CLattice(POINT aPoint);
-	CLattice(double _x, double _y, DWORD _flag);
+	CLattice(double _x, double _y, DWORD _flag, CDC* _cdc);
 
 	void Init();
 
@@ -17,6 +17,7 @@ public:
 
 protected:
 	
+	CDC* m_cdc;
 #pragma region LBE_params
 
 	POINT m_PhysCoord;
@@ -74,7 +75,7 @@ protected:
 
 public:
 
-	void Draw(CDC* pDC, int _scale_x, int _scale_y, int _scale_velocity);
+	void Draw(CDC* pDC, int _scale_velocity);
 	void CreatePen(CPen& aPen)
 	{
 		if(!aPen.CreatePen(PS_SOLID, 2, RGB(255,0,100)))

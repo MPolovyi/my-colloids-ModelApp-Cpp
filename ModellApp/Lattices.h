@@ -5,7 +5,7 @@ class CLattice_Mid :
 	public CLattice
 {
 public:
-	CLattice_Mid(double _x, double _y, DWORD _flag) : CLattice(_x,_y,_flag){};
+	CLattice_Mid(double _x, double _y, DWORD _flag, CDC* _cdc) : CLattice(_x,_y,_flag, _cdc){};
 	CLattice_Mid(void);
 	~CLattice_Mid(void);
 
@@ -16,7 +16,7 @@ class CLattice_Top :
 	public CLattice
 {
 public:
-	CLattice_Top(double _x, double _y, DWORD _flag) : CLattice(_x,_y,_flag){};
+	CLattice_Top(double _x, double _y, DWORD _flag, CDC* _cdc) : CLattice(_x,_y,_flag, _cdc){};
 	CLattice_Top(void);
 	~CLattice_Top(void);
 
@@ -27,7 +27,7 @@ class CLattice_Left :
 	public CLattice
 {
 public:
-	CLattice_Left(double _x, double _y, DWORD _flag) : CLattice(_x,_y,_flag){};
+	CLattice_Left(double _x, double _y, DWORD _flag, CDC* _cdc) : CLattice(_x,_y,_flag, _cdc){};
 	CLattice_Left(void);
 	~CLattice_Left(void);
 
@@ -38,7 +38,7 @@ class CLattice_Right :
 	public CLattice
 {
 public:
-	CLattice_Right(double _x, double _y, DWORD _flag) : CLattice(_x,_y,_flag){};
+	CLattice_Right(double _x, double _y, DWORD _flag, CDC* _cdc) : CLattice(_x,_y,_flag, _cdc){};
 	CLattice_Right(void);
 	~CLattice_Right(void);
 
@@ -49,7 +49,7 @@ class CLattice_Bottom :
 	public CLattice
 {
 public:
-	CLattice_Bottom(double _x, double _y, DWORD _flag) : CLattice(_x,_y,_flag){};
+	CLattice_Bottom(double _x, double _y, DWORD _flag, CDC* _cdc) : CLattice(_x,_y,_flag, _cdc){};
 	CLattice_Bottom(void);
 	~CLattice_Bottom(void);
 
@@ -60,7 +60,7 @@ class CLattice_Top_Left :
 	public CLattice
 {
 public:
-	CLattice_Top_Left(double _x, double _y, DWORD _flag) : CLattice(_x,_y,_flag){};
+	CLattice_Top_Left(double _x, double _y, DWORD _flag, CDC* _cdc) : CLattice(_x,_y,_flag, _cdc){};
 	CLattice_Top_Left(void);
 	~CLattice_Top_Left(void);
 
@@ -71,7 +71,7 @@ class CLattice_Top_Right :
 	public CLattice
 {
 public:
-	CLattice_Top_Right(double _x, double _y, DWORD _flag) : CLattice(_x,_y,_flag){};
+	CLattice_Top_Right(double _x, double _y, DWORD _flag, CDC* _cdc) : CLattice(_x,_y,_flag, _cdc){};
 	CLattice_Top_Right(void);
 	~CLattice_Top_Right(void);
 
@@ -82,7 +82,7 @@ class CLattice_Bottom_Left :
 	public CLattice
 {
 public:
-	CLattice_Bottom_Left(double _x, double _y, DWORD _flag) : CLattice(_x,_y,_flag){};
+	CLattice_Bottom_Left(double _x, double _y, DWORD _flag, CDC* _cdc) : CLattice(_x,_y,_flag, _cdc){};
 	CLattice_Bottom_Left(void);
 	~CLattice_Bottom_Left(void);
 
@@ -93,7 +93,7 @@ class CLattice_Bottom_Right :
 	public CLattice
 {
 public:
-	CLattice_Bottom_Right(double _x, double _y, DWORD _flag) : CLattice(_x,_y,_flag){};
+	CLattice_Bottom_Right(double _x, double _y, DWORD _flag, CDC* _cdc) : CLattice(_x,_y,_flag, _cdc){};
 	CLattice_Bottom_Right(void);
 	~CLattice_Bottom_Right(void);
 

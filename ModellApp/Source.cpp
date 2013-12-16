@@ -2,6 +2,8 @@
 #include "Header.h"
 
 
+
+
 UINT MyThreadProc( LPVOID pParam )
 {
 
@@ -10,8 +12,8 @@ UINT MyThreadProc( LPVOID pParam )
 	RECT Dimens;
 	Window->GetClientRect(&Dimens);
 
-	CWorld* World = new CWorld((int)10, (int)11, Window);
+	CWorld* World = new CWorld((int)50, (int)50, Window);
 
-	World->Live((int)10);
+	World->Live((int)20);
 	return 0;   // thread completed successfully
 }

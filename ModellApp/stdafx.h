@@ -47,11 +47,15 @@
 
 #include "resource.h"
 
-#include <vector>;
+
+#include <vector>
 using std::vector;
 
 #include <utility>
 using std::pair;
+
+#include <ppl.h>
+using concurrency::parallel_for;
 
 const int Coord_Mid[9][2] = {
 	{0, 0},

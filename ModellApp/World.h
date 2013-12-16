@@ -12,6 +12,11 @@
 #include "Lattice.h"
 #include "ModellAppView.h"
 #include "Lattices.h"
+
+
+
+
+
 class CWorld
 {
 
@@ -23,6 +28,8 @@ private:
 	CModellAppView* m_Window;
 
 	CDC* m_pDC;
+
+	
 
 public:
 	CWorld(int _X, int _Y, CModellAppView* _wnd);

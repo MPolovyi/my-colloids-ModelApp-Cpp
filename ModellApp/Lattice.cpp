@@ -15,9 +15,9 @@ CLattice::CLattice(POINT aPoint)
 	m_Coord = aPoint;
 }
 
-CLattice::CLattice(double _x, double _y, DWORD _flag)
+CLattice::CLattice(double _x, double _y, DWORD _flag, CDC* _cdc)
 {
-
+	m_cdc = _cdc;
 	m_Directions.reserve(NEIGHBOUR_GRID_COUNT);
 	m_Neighbours.reserve(NEIGHBOUR_GRID_COUNT);
 
@@ -43,6 +43,7 @@ void CLattice::Init()
 	MicroEqDensity();
 
 	m_microDensityAfterTime = m_microDensity;
+	Draw(m_cdc,0);
 }
 
 CLattice::~CLattice(void)
@@ -243,7 +244,7 @@ double* CLattice::Weights()
 }
 
 
-void CLattice::Draw(CDC* pDC, int _scale_x, int _scale_y, int _scale_velocity)
+void CLattice::Draw(CDC* pDC, int _scale_velocity)
 {
 	// Create a pen for this object and initialize it
 	CPen aPen;
@@ -261,19 +262,22 @@ void CLattice::Draw(CDC* pDC, int _scale_x, int _scale_y, int _scale_velocity)
 	auto velocity = MacroVelocity();
 
 	pDC->MoveTo(m_Coord.x, m_Coord.y);
+
+	CPen BluePen(PS_SOLID, 2, RGB(0, 20, 200));
+	CPen* pOldPen2 = pDC->SelectObject(&BluePen);
 	pDC->LineTo(m_Coord.x + velocity[0] * _scale_velocity, m_Coord.y + velocity[1] * _scale_velocity);
-
-
-	CPen GreenPen(PS_SOLID, 2, RGB(0, 200, 50));
-	CPen* pOldPen2 = pDC->SelectObject(&GreenPen);
-	for (int i=0; i<m_NeighCount; i++)
-	{
-		pDC->MoveTo(m_Coord.x, m_Coord.y);
-		auto f1 = m_Directions[i][0] * f()[i] * 50;
-		auto f2 = m_Directions[i][1] * f()[i] * 50;
-		pDC->LineTo(m_Coord.x + f1, m_Coord.y + f2);
-	}
 	pDC->SelectObject(pOldPen2);
+
+	//CPen GreenPen(PS_SOLID, 2, RGB(0, 200, 50));
+	//CPen* pOldPen2 = pDC->SelectObject(&GreenPen);
+	//for (int i=0; i<m_NeighCount; i++)
+	//{
+	//	pDC->MoveTo(m_Coord.x, m_Coord.y);
+	//	auto f1 = m_Directions[i][0] * f()[i] * 50;
+	//	auto f2 = m_Directions[i][1] * f()[i] * 50;
+	//	pDC->LineTo(m_Coord.x + f1, m_Coord.y + f2);
+	//}
+	//pDC->SelectObject(pOldPen2);
 
 	pDC->SelectObject(pOldPen);                // Restore the old pen
 	pDC->SelectObject(pOldBrush);              // Restore the old brush

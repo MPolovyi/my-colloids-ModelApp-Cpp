@@ -1,9 +1,13 @@
 #include "stdafx.h"
+
+
 #include "World.h"
 
-#include <iostream>
+
 #include "Lattices.h"
 #include "Lattice.h"
+
+#include <fstream>
 
         /*                   \
          *                    \ 
@@ -23,6 +27,9 @@
          * 
          * 
          */
+
+
+std::ofstream m_outfile;
 
 CWorld::CWorld(int _X, int _Y, CModellAppView* _wnd)
 {
@@ -48,6 +55,8 @@ CWorld::CWorld(int _X, int _Y, CModellAppView* _wnd)
 //TODO: Initialize corners!!!
 void CWorld::Initialize()
 {
+	m_outfile.open("timers.dat");
+
 	//TODO: optimize filling of grid!
 	for (int y=0; y<m_SizeY; y++)
 	{
@@ -66,13 +75,12 @@ void CWorld::Initialize()
 			if ((y==0 && x==0) || (y==0 && x==m_SizeX) || (y==m_SizeY && x==0) || (y==m_SizeY && x==m_SizeX))
 			{
 				flag = (IS_BOUNDARY | IS_CORNER);
-				Row.push_back(new CLattice(x * m_Scale_X, y * m_Scale_Y, flag));
+				Row.push_back(new CLattice(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
 			}
 			else
 			{
-				Row.push_back( new CLattice_Mid(x * m_Scale_X, y * m_Scale_Y, flag));
+				Row.push_back( new CLattice_Mid(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
 			}
-			
 		}
 		Row.shrink_to_fit();
 		m_Grid.push_back(Row);
@@ -86,21 +94,25 @@ void CWorld::Initialize()
 	int rows_count = m_Grid.size();
 	int cols_count = m_Grid[0].size();
 	
-	for (int y = 1; y < rows_count-1; y++)
-	{
-		for (int x= 1; x< cols_count-1; x++)
+	parallel_for (1, rows_count-1, 
+		[rows, cols_count](int y)
 		{
-			for (int vect=0; vect<NEIGHBOUR_GRID_COUNT; vect++)
-			{
-				auto x_add = Coord_Mid[vect][0];
-				auto y_add = Coord_Mid[vect][1];
-				rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], y_add, x_add, vect);
-			}
-			rows[y][x]->Init();
+			parallel_for (1, cols_count-1,
+				[rows, y](int x)
+				{
+					for (int vect=0; vect<NEIGHBOUR_GRID_COUNT; vect++)
+					{
+						auto x_add = Coord_Mid[vect][0];
+						auto y_add = Coord_Mid[vect][1];
+						rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], y_add, x_add, vect);
+					}
+					rows[y][x]->Init();
+				}
+			);
 		}
-	}
+	);
 
-	for (int y=1; y < rows_count-1; y++)
+	parallel_for (1, rows_count-1, [rows, cols_count](int y)
 	{
 		auto x=0;
 		for (int vect=0; vect<NEIGHBOURS_BOUNDARY_COUNT; vect++)
@@ -119,9 +131,10 @@ void CWorld::Initialize()
 			rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
 		}
 		rows[y][x]->Init();
-	}
+	});
 
-	for (int x=1; x < cols_count-1; x++)
+	parallel_for (1, cols_count-1,
+		[rows, rows_count](int x)
 	{
 		auto y=0;
 		for (int vect=0; vect<NEIGHBOURS_BOUNDARY_COUNT; vect++)
@@ -140,7 +153,7 @@ void CWorld::Initialize()
 			rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
 		}
 		rows[y][x]->Init();
-	}
+	});
 
 	for (int vect=0; vect<NEIGHBOURS_CORNER_COUNT; vect++)
 	{
@@ -178,22 +191,47 @@ void CWorld::Generate()
 	int cols_count = m_Grid[0].size();
 
 
-
-	for (int i = 1; i < rows_count-1; i++)
+	long begin = GetTickCount();
+	
+	parallel_for(1, rows_count-1, 
+		[cols_count, rows](int i) 
 	{
-		for (int j = 1; j< cols_count-1; j++)
+		parallel_for (1, cols_count-1,
+			[rows,i](int j)
 		{
 			rows[i][j]->StreamAndCollide();
-		}
-	}
+		});
+	});
 
-	for (int i = 2; i < rows_count-2; i++)
+	parallel_for(1, rows_count-1, 
+		[cols_count, rows](int i) 
 	{
-		for (int j = 2; j< cols_count-2; j++)
+		parallel_for (1, cols_count-1,
+			[rows,i](int j)
 		{
 			rows[i][j]->UpdateDensity();
-		}
-	}
+		});
+	});
+
+
+	//for (int i = 1; i < rows_count-1; i++)
+	//{
+	//	for (int j = 1; j< cols_count-1; j++)
+	//	{
+	//		rows[i][j]->StreamAndCollide();
+	//	}
+	//}
+
+	//for (int i = 2; i < rows_count-2; i++)
+	//{
+	//	for (int j = 2; j< cols_count-2; j++)
+	//	{
+	//		rows[i][j]->UpdateDensity();
+	//	}
+	//}
+
+	long End = GetTickCount() - begin;
+	m_outfile << End << std::endl;
 }
 
 
@@ -216,7 +254,7 @@ UINT CWorld::Draw(LPVOID pParam)
 	{
 		for (auto& Lattice : Row)
 		{
-			Lattice->Draw(m_pDC, m_Scale_X, m_Scale_Y, m_Scale_velocity);
+			Lattice->Draw(m_pDC, m_Scale_velocity);
 		}
 	}
 	return 0;
@@ -228,6 +266,6 @@ void CWorld::Live(int _steps)
 	{
 		Draw(NULL);
 		Generate();
-		Sleep(1000);
+		/*Sleep(1000);*/
 	}
 }
