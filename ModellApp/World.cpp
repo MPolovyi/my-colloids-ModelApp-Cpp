@@ -63,24 +63,58 @@ void CWorld::Initialize()
 		vector<CLattice*> Row;
 		for (int x=0; x<m_SizeX; x++)
 		{
-			DWORD flag = IS_MIDDLE;
-			if (y==0 || y== m_SizeY)
+			DWORD flag = 0x0;
+
+			flag = IS_CORNER | IS_BOUNDARY;
+			if (0==x && 0==y)
 			{
-				flag = (IS_BOUNDARY);
+				Row.push_back(new CLattice_Top_Left(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+				continue;
 			}
-			if (x==0 || x==m_SizeX)
+			else if (0==x && (m_SizeY-1)==y)
 			{
-				flag = (IS_BOUNDARY | IS_TRANSITION);
+				Row.push_back(new CLattice_Bottom_Left(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+				continue;
 			}
-			if ((y==0 && x==0) || (y==0 && x==m_SizeX) || (y==m_SizeY && x==0) || (y==m_SizeY && x==m_SizeX))
+			else if ((m_SizeX-1)==x && 0==y)
 			{
-				flag = (IS_BOUNDARY | IS_CORNER);
-				Row.push_back(new CLattice(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+				Row.push_back(new CLattice_Top_Right(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+				continue;
 			}
-			else
+			else if ((m_SizeX-1)==x && (m_SizeY-1)==y)
 			{
-				Row.push_back( new CLattice_Mid(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+				Row.push_back(new CLattice_Bottom_Right(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+				continue;
 			}
+			
+			flag = IS_BOUNDARY | IS_TRANSITION;
+
+			if (0==x)
+			{
+				Row.push_back(new CLattice_Mid(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+				continue;
+			}
+			if ((m_SizeX-1)==x)
+			{
+				Row.push_back(new CLattice_Mid(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+				continue;
+			}
+			
+			flag = IS_BOUNDARY;
+			if (0==y)
+			{
+				Row.push_back(new CLattice_Mid(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+				continue;
+			}
+			if ((m_SizeY-1)==y)
+			{
+				Row.push_back(new CLattice_Mid(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+				continue;
+			}
+
+			flag = IS_MIDDLE;
+
+			Row.push_back( new CLattice_Mid(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
 		}
 		Row.shrink_to_fit();
 		m_Grid.push_back(Row);
@@ -158,14 +192,6 @@ void CWorld::Initialize()
 			{
 				X+=cols_count;
 			}
-			if (cols_count == Y)
-			{
-				Y=0;
-			}
-			if (-1 == Y)
-			{
-				Y+=cols_count;
-			}
 			
 
 			rows[y][x]->AddToNeighbours(rows[Y][X], x_add, y_add, vect);
@@ -175,8 +201,8 @@ void CWorld::Initialize()
 		x=cols_count-1;
 		for (int vect=0; vect<NEIGHBOUR_GRID_COUNT; vect++)
 		{
-			auto x_add = Coord_Right[vect][0];
-			auto y_add = Coord_Right[vect][1];
+			auto x_add = Coord_Mid[vect][0];
+			auto y_add = Coord_Mid[vect][1];
 
 			auto X = x+x_add;
 			auto Y = y+y_add;
@@ -188,14 +214,6 @@ void CWorld::Initialize()
 			if (-1 == X)
 			{
 				X+=cols_count;
-			}
-			if (cols_count == Y)
-			{
-				Y=0;
-			}
-			if (-1 == Y)
-			{
-				Y+=cols_count;
 			}
 
 			rows[y][x]->AddToNeighbours(rows[Y][X], x_add, y_add, vect);

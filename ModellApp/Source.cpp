@@ -12,8 +12,8 @@ UINT MyThreadProc( LPVOID pParam )
 	RECT Dimens;
 	Window->GetClientRect(&Dimens);
 
-	CWorld* World = new CWorld((int)50, (int)50, Window);
+	CWorld* World = new CWorld((int)10, (int)10, Window);
 
-	World->Live((int)20);
+	World->Live((int)200);
 	return 0;   // thread completed successfully
 }

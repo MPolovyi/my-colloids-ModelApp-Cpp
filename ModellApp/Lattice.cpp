@@ -26,7 +26,7 @@ CLattice::CLattice(double _x, double _y, DWORD _flag, CDC* _cdc)
 	m_Coord.y = _y + 10;
 
 
-	double OutForce[] = {0,0};
+	double OutForce[] = {0,1};
 	m_outerForce = vector<double>(OutForce, OutForce+2);
 }
 
@@ -52,9 +52,11 @@ CLattice::~CLattice(void)
 
 void CLattice::StreamAndCollide()
 {
+	MicroEqDensity();
 	for (int i = 0; i < m_NeighCount; i++)
 	{
 		auto ForceVar = m_Force[i];
+
 		double collision = (m_microDensity[i]  - m_microEqDensity[i] + ForceVar)/5;
 		double NewFi = m_microDensity[i] - collision;
 		m_Neighbours[i].first->NewF(NewFi, m_Neighbours[i].second);
@@ -145,7 +147,7 @@ double* CLattice::MicroDensity()
 		double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
 		for (int i = 0; i < m_NeighCount; i++)
 		{
-			tmp[i] = m_macroDensity * tmp[i];
+			tmp[i] = m_macroDensity * m_weights[i] * tmp[i];
 		}
 
 		m_microDensity = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
@@ -156,7 +158,7 @@ double* CLattice::MicroDensity()
 		double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
 		for (int i = 0; i < m_NeighCount; i++)
 		{
-			tmp[i] = m_macroDensity * tmp[i];
+			tmp[i] = m_macroDensity * m_weights[i] * tmp[i];
 		}
 
 		m_microDensity = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
@@ -167,13 +169,15 @@ double* CLattice::MicroDensity()
 double* CLattice::MicroEqDensity()
 {
 	double *tmp = new double[m_Directions.size()];
-	vector<double> Velocity = MacroVelocity();
-
-	if (m_flags & IS_BOUNDARY & ~IS_TRANSITION)
+	double spd[] = {0,0};
+	
+	vector<double> Velocity = vector<double>(spd, spd+2);
+	
+	if (m_flags & IS_TRANSITION)
 	{
-		Velocity[0] = 0;
-		Velocity[1] = 0;
+		vector<double> Velocity = MacroVelocity();
 	}
+	
 	for (int i = 0; i < m_NeighCount; i++)
 	{
 		// omega_i * rho * (1 + 3(e_i,u) + 9*(e_i,u)^2 / 2 - 3*u^2/2), где (e_i,u) - скал€рное произведение
@@ -261,21 +265,24 @@ void CLattice::Draw(CDC* pDC, int _scale_velocity)
 
 	pDC->MoveTo(m_Coord.x, m_Coord.y);
 
+	//Draw lattice center point
 	CPen BluePen(PS_SOLID, 2, RGB(0, 20, 200));
 	CPen* pOldPen2 = pDC->SelectObject(&BluePen);
-	pDC->LineTo(m_Coord.x + velocity[0] * _scale_velocity, m_Coord.y + velocity[1] * _scale_velocity);
+	pDC->LineTo(m_Coord.x + velocity[0] * _scale_velocity, m_Coord.y + velocity[1] * _scale_velocity *10);
 	pDC->SelectObject(pOldPen2);
 
-	//CPen GreenPen(PS_SOLID, 2, RGB(0, 200, 50));
-	//CPen* pOldPen2 = pDC->SelectObject(&GreenPen);
-	//for (int i=0; i<m_NeighCount; i++)
-	//{
-	//	pDC->MoveTo(m_Coord.x, m_Coord.y);
-	//	auto f1 = m_Directions[i][0] * f()[i] * 50;
-	//	auto f2 = m_Directions[i][1] * f()[i] * 50;
-	//	pDC->LineTo(m_Coord.x + f1, m_Coord.y + f2);
-	//}
-	//pDC->SelectObject(pOldPen2);
+
+	//Draw micro_densities
+	CPen GreenPen(PS_SOLID, 1, RGB(0, 200, 50));
+	pOldPen2 = pDC->SelectObject(&GreenPen);
+	for (int i=0; i<m_NeighCount; i++)
+	{
+		pDC->MoveTo(m_Coord.x, m_Coord.y);
+		auto f1 = m_Directions[i][0] * m_microDensity[i] * 100;
+		auto f2 = m_Directions[i][1] * m_microDensity[i] * 100;
+		pDC->LineTo(m_Coord.x + f1, m_Coord.y + f2);
+	}
+	pDC->SelectObject(pOldPen2);
 
 	pDC->SelectObject(pOldPen);                // Restore the old pen
 	pDC->SelectObject(pOldBrush);              // Restore the old brush
