@@ -54,7 +54,8 @@ void CLattice::StreamAndCollide()
 {
 	for (int i = 0; i < m_NeighCount; i++)
 	{
-		double collision = (m_microDensity[i]  - m_microEqDensity[i] + Force()[i])/5;
+		auto ForceVar = m_Force[i];
+		double collision = (m_microDensity[i]  - m_microEqDensity[i] + ForceVar)/5;
 		double NewFi = m_microDensity[i] - collision;
 		m_Neighbours[i].first->NewF(NewFi, m_Neighbours[i].second);
 	}
@@ -92,16 +93,6 @@ double CLattice::GetMacroDensity()
 
 //TODO: Create some method for transversion of coordinates from pixels into meters and vise versa. Consider coords in CLattice as meters.
 
-double* CLattice:: f()
-{
-	return &m_microDensity[0];
-}
-
-double* CLattice:: fEq()
-{
-	return &m_microEqDensity[0];
-}
-
 double* CLattice::Force()
 {
 	double *tmp = new double[m_NeighCount];
@@ -116,7 +107,9 @@ double* CLattice::Force()
 			NewForce.push_back(m_outerForce[0]);
 			NewForce.push_back(m_outerForce[1]);
 
+			
 			tmp[i] = m_weights[i] * (NMath::DotProduct(NewForce , m_Directions[i]));
+			auto tempdebug = tmp[i];
 		}
 		else
 		{
@@ -128,9 +121,9 @@ double* CLattice::Force()
 		}
 
 	}
-	m_Force = tmp;
+	m_Force = vector<double>(tmp, tmp+m_NeighCount);
 	delete [] tmp;
-	return m_Force;
+	return &m_Force[0];
 }
 
 void CLattice::NewF( double nF,int i )
@@ -228,6 +221,11 @@ double* CLattice::Weights()
 	if (m_flags & IS_CORNER)
 	{
 		double tmp[] = WEIGHTS_CORNER;
+		m_weights = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
+	}
+	else if (m_flags & IS_TRANSITION)
+	{
+		double tmp[] = WEIGHTS;
 		m_weights = vector<double>(tmp,tmp+sizeof(tmp)/sizeof(tmp[0]));
 	}
 	else if (m_flags & IS_BOUNDARY)

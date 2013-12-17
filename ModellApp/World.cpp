@@ -112,23 +112,93 @@ void CWorld::Initialize()
 		}
 	);
 
+
+	////Method adds vertical left and right borders
+	//parallel_for (1, rows_count-1, [rows, cols_count](int y)
+	//{
+	//	auto x=0;
+	//	for (int vect=0; vect<NEIGHBOURS_BOUNDARY_COUNT; vect++)
+	//	{
+	//		auto x_add = Coord_Left[vect][0];
+	//		auto y_add = Coord_Left[vect][1];
+	//		rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
+	//	}
+	//	rows[y][x]->Init();
+
+	//	x=cols_count-1;
+	//	for (int vect=0; vect<NEIGHBOURS_BOUNDARY_COUNT; vect++)
+	//	{
+	//		auto x_add = Coord_Right[vect][0];
+	//		auto y_add = Coord_Right[vect][1];
+	//		rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
+	//	}
+	//	rows[y][x]->Init();
+	//});
+
+	//Method adds vertical left and right borders
+
+
+	//TODO: Check how periodic boundaries treated!!!
 	parallel_for (1, rows_count-1, [rows, cols_count](int y)
 	{
 		auto x=0;
-		for (int vect=0; vect<NEIGHBOURS_BOUNDARY_COUNT; vect++)
+		for (int vect=0; vect<NEIGHBOUR_GRID_COUNT; vect++)
 		{
-			auto x_add = Coord_Left[vect][0];
-			auto y_add = Coord_Left[vect][1];
-			rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
+			auto x_add = Coord_Mid[vect][0];
+			auto y_add = Coord_Mid[vect][1];
+
+			auto X = x+x_add;
+			auto Y = y+y_add;
+
+			if (cols_count == X)
+			{
+				X=0;
+			}
+			if (-1 == X)
+			{
+				X+=cols_count;
+			}
+			if (cols_count == Y)
+			{
+				Y=0;
+			}
+			if (-1 == Y)
+			{
+				Y+=cols_count;
+			}
+			
+
+			rows[y][x]->AddToNeighbours(rows[Y][X], x_add, y_add, vect);
 		}
 		rows[y][x]->Init();
 
 		x=cols_count-1;
-		for (int vect=0; vect<NEIGHBOURS_BOUNDARY_COUNT; vect++)
+		for (int vect=0; vect<NEIGHBOUR_GRID_COUNT; vect++)
 		{
 			auto x_add = Coord_Right[vect][0];
 			auto y_add = Coord_Right[vect][1];
-			rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
+
+			auto X = x+x_add;
+			auto Y = y+y_add;
+
+			if (cols_count == X)
+			{
+				X=0;
+			}
+			if (-1 == X)
+			{
+				X+=cols_count;
+			}
+			if (cols_count == Y)
+			{
+				Y=0;
+			}
+			if (-1 == Y)
+			{
+				Y+=cols_count;
+			}
+
+			rows[y][x]->AddToNeighbours(rows[Y][X], x_add, y_add, vect);
 		}
 		rows[y][x]->Init();
 	});
@@ -266,6 +336,6 @@ void CWorld::Live(int _steps)
 	{
 		Draw(NULL);
 		Generate();
-		/*Sleep(1000);*/
+		Sleep(500);
 	}
 }

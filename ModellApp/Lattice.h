@@ -33,6 +33,7 @@ protected:
 
 	vector<vector<int>> m_Directions;
 	vector<double> m_Velocity;
+	vector<double> m_Force;
 
 public:
 	vector<pair<CLattice*,int>> m_Neighbours;
@@ -62,7 +63,7 @@ protected:
 	double* MicroDensity();
 	double* MicroEqDensity();
 	double* Weights();
-	double* m_Force;
+	
 
 	virtual int GetIndexOfTransition(int dx, int dy){return -111;}
 #pragma endregion LBE_methods

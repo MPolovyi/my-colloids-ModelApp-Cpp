@@ -1,7 +1,33 @@
-﻿Build started 17.12.2013 1:49:29.
+﻿Build started 17.12.2013 2:23:26.
      1>Project "E:\Users\Maxim\UserData\University\4 course\ModellApp\ModellApp\ModellApp.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         F:\Program Files\Programming\Visual studio\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\ModellApp.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt World.cpp
+         F:\Program Files\Programming\Visual studio\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\ModellApp.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Lattice.cpp Lattices.cpp ModellAppView.cpp Source.cpp World.cpp
+         Lattice.cpp
+     1>Lattice.cpp(25): warning C4244: '=' : conversion from 'double' to 'LONG', possible loss of data
+     1>Lattice.cpp(26): warning C4244: '=' : conversion from 'double' to 'LONG', possible loss of data
+     1>Lattice.cpp(266): warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+     1>e:\users\maxim\userdata\university\4 course\modellapp\modellapp\Math.cpp(26): warning C4018: '<' : signed/unsigned mismatch
+                 Lattice.cpp(85) : see reference to function template instantiation 'double NMath::Abs<double>(std::vector<_Ty>)' being compiled
+                 with
+                 [
+                     _Ty=double
+                 ]
+     1>e:\users\maxim\userdata\university\4 course\modellapp\modellapp\Math.cpp(38): warning C4018: '<' : signed/unsigned mismatch
+                 Lattice.cpp(91) : see reference to function template instantiation 'A NMath::Sum<double>(std::vector<_Ty>)' being compiled
+                 with
+                 [
+                     A=double,
+                     _Ty=double
+                 ]
+     1>e:\users\maxim\userdata\university\4 course\modellapp\modellapp\Math.cpp(13): warning C4018: '<' : signed/unsigned mismatch
+                 Lattice.cpp(111) : see reference to function template instantiation 'double NMath::DotProduct<double,int>(std::vector<_Ty>,std::vector<int>)' being compiled
+                 with
+                 [
+                     _Ty=double
+                 ]
+         Lattices.cpp
+         ModellAppView.cpp
+         Source.cpp
          World.cpp
        Link:
          F:\Program Files\Programming\Visual studio\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Users\Maxim\UserData\University\4 course\ModellApp\Release\ModellApp.exe" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"F:\Program Files\Programming\Visual studio\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"E:\Users\Maxim\UserData\University\4 course\ModellApp\Release\ModellApp.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Users\Maxim\UserData\University\4 course\ModellApp\Release\ModellApp.lib" /MACHINE:X86 /SAFESEH Release\ModellApp.res
@@ -22,4 +48,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.93
+Time Elapsed 00:00:02.21
