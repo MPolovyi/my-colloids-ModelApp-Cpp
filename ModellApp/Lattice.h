@@ -15,6 +15,8 @@ public:
 
 	~CLattice(void);
 
+	void DrawNeighbours(CDC* pDC, int _scale_velocity);
+
 protected:
 	
 	CDC* m_cdc;

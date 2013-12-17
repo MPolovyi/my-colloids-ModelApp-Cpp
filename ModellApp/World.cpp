@@ -138,7 +138,7 @@ void CWorld::Initialize()
 					{
 						auto x_add = Coord_Mid[vect][0];
 						auto y_add = Coord_Mid[vect][1];
-						rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], y_add, x_add, vect);
+						rows[y][x]->AddToNeighbours(rows[y+y_add][x+x_add], x_add, y_add, vect);
 					}
 					rows[y][x]->Init();
 				}
@@ -269,6 +269,16 @@ void CWorld::Initialize()
 	rows[rows_count-1][cols_count-1]->Init();
 
 
+
+	CRect pDC_Rect;
+	m_Window->GetClientRect(pDC_Rect);
+
+	CBrush brushWhite(RGB(255, 255, 255));
+	CBrush* pOldBrush = m_pDC->SelectObject(&brushWhite);
+	m_pDC->Rectangle(pDC_Rect);
+	m_pDC->SelectObject(pOldBrush);
+
+
 	#pragma endregion AddNeighbours
 }
 
@@ -329,6 +339,8 @@ CWorld::~CWorld(void)
 
 UINT CWorld::Draw(LPVOID pParam)
 {
+	//TODO: Draw into Bitmap, and than bitmap on canvas
+
 	CRect pDC_Rect;
 
 	m_Window->GetClientRect(pDC_Rect);
@@ -354,6 +366,24 @@ void CWorld::Live(int _steps)
 	{
 		Draw(NULL);
 		Generate();
-		Sleep(500);
+		//Sleep(500);
+	}
+	
+}
+
+void CWorld::DataToFile()
+{
+	vector<CLattice*> *rows = &m_Grid[0];
+	int rows_count = m_Grid.size();
+	int cols_count = m_Grid[0].size();
+
+	for (int i = 2; i < rows_count-2; i++)
+	{
+		for (int j = 2; j< cols_count-2; j++)
+		{
+			m_outfile << NMath::Abs(rows[i][j]->MacroVelocity()) << "  ";
+		}
+
+		m_outfile << std::endl;
 	}
 }

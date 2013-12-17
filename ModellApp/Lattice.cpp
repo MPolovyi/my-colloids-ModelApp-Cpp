@@ -6,6 +6,15 @@
 #define WEIGHTS_BOUNDARY {4/9.0, 1/9.0, 1/9.0, 1/9.0, 1/36.0, 1/36.0}
 #define WEIGHTS_CORNER {4/9.0, 1/9.0, 1/9.0, 1/36.0}
 
+void CLattice::DrawNeighbours(CDC* pDC, int _scale_velocity)
+{
+	for (int i=0; i<m_NeighCount; i++)
+	{
+		int a = m_Neighbours[i].second;
+		m_Neighbours[i].first->Draw(pDC, _scale_velocity);
+	}
+}
+
 CLattice::CLattice(void)
 {
 }
@@ -26,7 +35,7 @@ CLattice::CLattice(double _x, double _y, DWORD _flag, CDC* _cdc)
 	m_Coord.y = _y + 10;
 
 
-	double OutForce[] = {0,0};
+	double OutForce[] = {1,0};
 	m_outerForce = vector<double>(OutForce, OutForce+2);
 }
 
@@ -55,9 +64,8 @@ void CLattice::StreamAndCollide()
 	MicroEqDensity();
 	for (int i = 0; i < m_NeighCount; i++)
 	{
-		auto ForceVar = m_Force[i];
 
-		double collision = (m_microDensity[i]  - m_microEqDensity[i] + ForceVar)/5;
+		double collision = (m_microDensity[i]  - m_microEqDensity[i] + m_Force[i])/5;
 		double NewFi = m_microDensity[i] - collision;
 		m_Neighbours[i].first->NewF(NewFi, m_Neighbours[i].second);
 	}
@@ -66,6 +74,7 @@ void CLattice::StreamAndCollide()
 
 void CLattice::AddToNeighbours(CLattice* _lattice, int dx, int dy, int nghb)
 {
+	int a = GetIndexOfTransition(dx, dy);
 	pair<CLattice*,int> tmp(_lattice, GetIndexOfTransition(dx, dy));
 	m_Neighbours.push_back(tmp);
 
@@ -143,9 +152,9 @@ double* CLattice::MicroDensity()
 	
 	if (m_Coord.x>200 && m_Coord.x<220 && m_Coord.y>200 && m_Coord.y<800)
 	{
-		double tmp[] = {1/54.0, 20/54.0, 26/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0};
+		//double tmp[] = {1/54.0, 20/54.0, 26/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0};
 
-		//double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
+		double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
 		for (int i = 0; i < m_NeighCount; i++)
 		{
 			tmp[i] = m_macroDensity * m_weights[i] * tmp[i];

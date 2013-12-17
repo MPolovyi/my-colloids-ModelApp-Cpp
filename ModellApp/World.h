@@ -42,9 +42,10 @@ public:
 	void Generate();
 	void StrAndCollide(vector<pair<CLattice*, int>> _latticeBlock, int _x, int _y);
 
-
 	void Live(int _steps);
 
 	void TimeStep();
+
+	void DataToFile();
 };
 
