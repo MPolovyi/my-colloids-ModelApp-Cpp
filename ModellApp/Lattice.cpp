@@ -26,7 +26,7 @@ CLattice::CLattice(double _x, double _y, DWORD _flag, CDC* _cdc)
 	m_Coord.y = _y + 10;
 
 
-	double OutForce[] = {0,1};
+	double OutForce[] = {0,0};
 	m_outerForce = vector<double>(OutForce, OutForce+2);
 }
 
@@ -143,8 +143,9 @@ double* CLattice::MicroDensity()
 	
 	if (m_Coord.x>200 && m_Coord.x<220 && m_Coord.y>200 && m_Coord.y<800)
 	{
-		//double[] tmp = {1/54.0, 20/54.0, 26/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0};
-		double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
+		double tmp[] = {1/54.0, 20/54.0, 26/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0, 1/54.0};
+
+		//double  tmp[] = {1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0};
 		for (int i = 0; i < m_NeighCount; i++)
 		{
 			tmp[i] = m_macroDensity * m_weights[i] * tmp[i];
@@ -195,23 +196,26 @@ vector<double> CLattice::MacroVelocity()
 {
 	double a[] = {0,0};
 	vector<double> velocity = vector<double>(a,a+2);
-	int length = m_Neighbours.size();
-	double *tmp1 = new double[length];
 
-	for (int i = 1; i < length; i++)
-	{
-		tmp1[i] = (1/GetMacroDensity())*m_microDensity[i]*m_Directions[i][0];
-		velocity[0]+=tmp1[i];
+	if(m_flags & (IS_TRANSITION | IS_MIDDLE)){
+		int length = m_Neighbours.size();
+		double *tmp1 = new double[length];
+
+		for (int i = 1; i < length; i++)
+		{
+			tmp1[i] = (1/GetMacroDensity())*m_microDensity[i]*m_Directions[i][0];
+			velocity[0]+=tmp1[i];
+		}
+
+
+		for (int i = 1; i < length; i++)
+		{
+			tmp1[i] = (1/GetMacroDensity())*m_microDensity[i]*m_Directions[i][1];
+			velocity[1]+=tmp1[i];
+		}
+
+		delete [] tmp1;
 	}
-
-	
-	for (int i = 1; i < length; i++)
-	{
-		tmp1[i] = (1/GetMacroDensity())*m_microDensity[i]*m_Directions[i][1];
-		velocity[1]+=tmp1[i];
-	}
-
-	delete [] tmp1;
 	return velocity;
 }
 
@@ -268,7 +272,7 @@ void CLattice::Draw(CDC* pDC, int _scale_velocity)
 	//Draw lattice center point
 	CPen BluePen(PS_SOLID, 2, RGB(0, 20, 200));
 	CPen* pOldPen2 = pDC->SelectObject(&BluePen);
-	pDC->LineTo(m_Coord.x + velocity[0] * _scale_velocity, m_Coord.y + velocity[1] * _scale_velocity *10);
+	pDC->LineTo(m_Coord.x + velocity[0] * _scale_velocity, m_Coord.y + velocity[1] * _scale_velocity);
 	pDC->SelectObject(pOldPen2);
 
 

@@ -44,7 +44,7 @@ CWorld::CWorld(int _X, int _Y, CModellAppView* _wnd)
 	m_Scale_X = (Graph.right - Graph.left)/m_SizeX;
 	m_Scale_Y = (Graph.bottom - Graph.top)/m_SizeY;
 
-	m_Scale_velocity = 100;
+	m_Scale_velocity = 50;
 
 	CClientDC* aDC = new CClientDC(_wnd);
 	m_pDC = aDC;
