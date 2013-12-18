@@ -2,9 +2,11 @@ ipch/*
 Release/*
 Debug/*
 ModellApp/Debug/*
+ModellApp/Release/*
 
 *.suo
 *.sdf
 *.press
 *.vsp
 *.opensdf
+*sdf.orig
