@@ -14,7 +14,7 @@ UINT MyThreadProc( LPVOID pParam )
 
 	CWorld* World = new CWorld((int)30, (int)100, Window);
 
-	World->Live((int)200);
+	World->Live((int)50);
 
 	World->DataToFile();
 	World->Draw(NULL);
