@@ -3,6 +3,7 @@ Release/*
 Debug/*
 ModellApp/Debug/*
 ModellApp/Release/*
+ModellApp\Release\*
 
 *.suo
 *.sdf

@@ -1,10 +1,10 @@
-﻿Build started 18.12.2013 0:02:12.
-     1>Project "E:\Users\Maxim\UserData\University\4 course\ModellApp\ModellApp\ModellApp.vcxproj" on node 2 (Build target(s)).
+﻿Build started 20.12.2013 12:01:01.
+     1>Project "D:\data\4 course\ModellApp\ModellApp\ModellApp.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         F:\Program Files\Programming\Visual studio\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\ModellApp.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Source.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\ModellApp.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Source.cpp
          Source.cpp
        Link:
-         F:\Program Files\Programming\Visual studio\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Users\Maxim\UserData\University\4 course\ModellApp\Release\ModellApp.exe" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"F:\Program Files\Programming\Visual studio\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"E:\Users\Maxim\UserData\University\4 course\ModellApp\Release\ModellApp.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Users\Maxim\UserData\University\4 course\ModellApp\Release\ModellApp.lib" /MACHINE:X86 /SAFESEH Release\ModellApp.res
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\data\4 course\ModellApp\Release\ModellApp.exe" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"D:\data\4 course\ModellApp\Release\ModellApp.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\data\4 course\ModellApp\Release\ModellApp.lib" /MACHINE:X86 /SAFESEH Release\ModellApp.res
          Release\Lattice.obj
          Release\Lattices.obj
          Release\MainFrm.obj
@@ -17,9 +17,9 @@
          Release\World.obj
          Generating code
          Finished generating code
-         ModellApp.vcxproj -> E:\Users\Maxim\UserData\University\4 course\ModellApp\Release\ModellApp.exe
-     1>Done Building Project "E:\Users\Maxim\UserData\University\4 course\ModellApp\ModellApp\ModellApp.vcxproj" (Build target(s)).
+         ModellApp.vcxproj -> D:\data\4 course\ModellApp\Release\ModellApp.exe
+     1>Done Building Project "D:\data\4 course\ModellApp\ModellApp\ModellApp.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.14
+Time Elapsed 00:00:05.17
