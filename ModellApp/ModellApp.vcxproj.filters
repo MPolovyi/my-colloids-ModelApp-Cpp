@@ -19,18 +19,18 @@
     <Filter Include="Source Files\Graph">
       <UniqueIdentifier>{3712babb-6ec1-4224-afae-29ecc7975187}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\LBE">
+      <UniqueIdentifier>{996f80ff-5507-4c04-905c-f0838c13a1cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\LBE">
+      <UniqueIdentifier>{8b590cac-776f-4adf-8af0-d9c10f3a3597}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Lattice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MainFrm.h">
@@ -51,21 +51,24 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files\Graph</Filter>
     </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lattice.h">
+      <Filter>Header Files\LBE</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Header Files\LBE</Filter>
+    </ClInclude>
     <ClInclude Include="Header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Lattices.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Different_Lattices.h">
+      <Filter>Header Files\LBE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Lattice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainFrm.cpp">
@@ -86,8 +89,17 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Lattices.cpp">
+    <ClCompile Include="Grid.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lattice.cpp">
+      <Filter>Source Files\LBE</Filter>
+    </ClCompile>
+    <ClCompile Include="Lattices.cpp">
+      <Filter>Source Files\LBE</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files\LBE</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

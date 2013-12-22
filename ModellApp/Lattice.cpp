@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Lattice.h"
+#include "Different_Lattices.h"
 #include "World.h"
 
 #define WEIGHTS {4/9.0, 1/9.0, 1/9.0, 1/9.0, 1/9.0, 1/36.0, 1/36.0, 1/36.0, 1/36.0}
@@ -35,7 +36,7 @@ CLattice::CLattice(double _x, double _y, DWORD _flag, CDC* _cdc)
 	m_Coord.y = _y + 10;
 
 
-	double OutForce[] = {1,0};
+	double OutForce[] = {10,0};
 	m_outerForce = vector<double>(OutForce, OutForce+2);
 }
 
@@ -62,9 +63,17 @@ CLattice::~CLattice(void)
 void CLattice::StreamAndCollide()
 {
 	MicroEqDensity();
+
+	if (m_flags & (IS_TRANSITION ))
+	{
+	}
+	else if (m_flags & (IS_BOUNDARY | IS_OBSTRACTION))
+	{
+		this->Revert();
+	}
+
 	for (int i = 0; i < m_NeighCount; i++)
 	{
-
 		double collision = (m_microDensity[i]  - m_microEqDensity[i] + m_Force[i])/5;
 		double NewFi = m_microDensity[i] - collision;
 		m_Neighbours[i].first->NewF(NewFi, m_Neighbours[i].second);
@@ -180,10 +189,13 @@ double* CLattice::MicroEqDensity()
 {
 	double *tmp = new double[m_Directions.size()];
 	double spd[] = {0,0};
-	
 	vector<double> Velocity = vector<double>(spd, spd+2);
-	
-	if (m_flags & IS_TRANSITION)
+
+	if (m_flags & (IS_BOUNDARY | IS_OBSTRACTION))
+	{
+		auto spd1 = Velocity[0];
+	}
+	else if (m_flags & (IS_TRANSITION | IS_MIDDLE & ~IS_OBSTRACTION))
 	{
 		vector<double> Velocity = MacroVelocity();
 	}
@@ -205,8 +217,11 @@ vector<double> CLattice::MacroVelocity()
 {
 	double a[] = {0,0};
 	vector<double> velocity = vector<double>(a,a+2);
-
-	if(m_flags & (IS_TRANSITION | IS_MIDDLE)){
+	if (m_flags & (IS_BOUNDARY | IS_OBSTRACTION))
+	{
+	}
+	else if(m_flags & (IS_TRANSITION | IS_MIDDLE))
+	{
 		int length = m_Neighbours.size();
 		double *tmp1 = new double[length];
 
@@ -271,6 +286,14 @@ void CLattice::Draw(CDC* pDC, int _scale_velocity)
 	CBrush* pOldBrush = dynamic_cast<CBrush*>(pDC->SelectStockObject(NULL_BRUSH));
 
 	// Now draw the circle
+	if (m_flags & IS_OBSTRACTION)
+	{
+		CPen BluePen(PS_SOLID, 5, RGB(0, 250, 0));
+		CPen* pOldPen2 = pDC->SelectObject(&BluePen);
+		pDC->Ellipse(m_Coord.x-m_radius*2, m_Coord.y+m_radius*2,
+		m_Coord.x+m_radius+2, m_Coord.y-m_radius*2);
+		pDC->SelectObject(pOldPen2);
+	}
 	pDC->Ellipse(m_Coord.x-m_radius, m_Coord.y+m_radius,
 		m_Coord.x+m_radius, m_Coord.y-m_radius);
 

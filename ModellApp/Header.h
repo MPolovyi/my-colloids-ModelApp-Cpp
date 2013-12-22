@@ -22,4 +22,5 @@ struct MyStruct
 	CModellAppView Window;
 };
 
-UINT MyThreadProc( LPVOID pParam );
+UINT CountLBE( LPVOID pParam );
+UINT CountNumericalNS(LPVOID pParam);

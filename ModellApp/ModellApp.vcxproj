@@ -14,6 +14,7 @@
     <ProjectGuid>{D39FD77F-2ECE-4DCE-BF55-B1362FE054E1}</ProjectGuid>
     <RootNamespace>ModellApp</RootNamespace>
     <Keyword>MFCProj</Keyword>
+    <ProjectName>ModellApp_LBE</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -101,9 +102,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="Different_Lattices.h" />
     <ClInclude Include="Lattice.h" />
-    <ClInclude Include="Lattices.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="ModellApp.h" />
     <ClInclude Include="ModellAppDoc.h" />
@@ -114,6 +116,7 @@
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Lattice.cpp" />
     <ClCompile Include="Lattices.cpp" />
     <ClCompile Include="MainFrm.cpp" />

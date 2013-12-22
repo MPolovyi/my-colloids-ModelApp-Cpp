@@ -66,6 +66,7 @@ protected:
 	double* MicroEqDensity();
 	double* Weights();
 	
+	virtual void Revert(){};
 
 	virtual int GetIndexOfTransition(int dx, int dy){return -111;}
 #pragma endregion LBE_methods

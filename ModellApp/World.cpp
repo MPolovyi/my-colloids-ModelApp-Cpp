@@ -1,11 +1,8 @@
 #include "stdafx.h"
-
+#include <string>
 
 #include "World.h"
-
-
-#include "Lattices.h"
-#include "Lattice.h"
+#include < windows.h >
 
 #include <fstream>
 
@@ -57,12 +54,37 @@ void CWorld::Initialize()
 {
 	m_outfile.open("timers.dat");
 
+	HBITMAP hbitmap;
+	BITMAP bitmap;
+	HDC hdc, hmemdc;
+
+	COLORREF pixcolor;
+
+	PAINTSTRUCT paintStruct;
+	hdc= BeginPaint(m_Window->m_hWnd, &paintStruct);
+
+	/* loading the bitmap from a BMP file (ensure the file is present under the project folder) */
+	hbitmap= (HBITMAP)LoadImage(NULL, _T("truck.bmp"),IMAGE_BITMAP, 0,0, LR_LOADFROMFILE );
+
+	if(hbitmap == NULL)
+	{
+		MessageBox(NULL, _T("Bitmap not loaded- Ensure the file 'truck.bmp' is present in the project folder"),_T("Error"),MB_OK);
+	}
+
+	hmemdc= CreateCompatibleDC(hdc);
+	SelectObject(hmemdc, hbitmap);
+	GetObject(hbitmap, sizeof(BITMAP), &bitmap);
+	BitBlt(hdc, 0, 0, bitmap.bmWidth,bitmap.bmHeight, hmemdc,0,0, SRCCOPY);
+
+
+
 	//TODO: optimize filling of grid!
 	for (int y=0; y<m_SizeY; y++)
 	{
 		vector<CLattice*> Row;
 		for (int x=0; x<m_SizeX; x++)
 		{
+
 			DWORD flag = 0x0;
 
 			flag = IS_CORNER | IS_BOUNDARY;
@@ -112,9 +134,19 @@ void CWorld::Initialize()
 				continue;
 			}
 
-			flag = IS_MIDDLE;
+			pixcolor = GetPixel(hmemdc, y,x);
 
+			int red = GetRValue(pixcolor);
+			if (red<50)
+			{
+				flag = IS_MIDDLE | IS_OBSTRACTION;
+				Row.push_back( new CLattice_Mid(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+				continue;
+			}
+
+			flag = IS_MIDDLE;
 			Row.push_back( new CLattice_Mid(x * m_Scale_X, y * m_Scale_Y, flag, m_pDC));
+			
 		}
 		Row.shrink_to_fit();
 		m_Grid.push_back(Row);
@@ -291,20 +323,20 @@ void CWorld::Generate()
 
 	long begin = GetTickCount();
 	
-	parallel_for(1, rows_count-1, 
+	parallel_for(0, rows_count, 
 		[cols_count, rows](int i) 
 	{
-		parallel_for (1, cols_count-1,
+		parallel_for (0, cols_count,
 			[rows,i](int j)
 		{
 			rows[i][j]->StreamAndCollide();
 		});
 	});
 
-	parallel_for(1, rows_count-1, 
+	parallel_for(0, rows_count, 
 		[cols_count, rows](int i) 
 	{
-		parallel_for (1, cols_count-1,
+		parallel_for (0, cols_count,
 			[rows,i](int j)
 		{
 			rows[i][j]->UpdateDensity();
@@ -337,7 +369,7 @@ CWorld::~CWorld(void)
 {
 }
 
-UINT CWorld::Draw(LPVOID pParam)
+UINT CWorld::Draw(int iteration)
 {
 	//TODO: Draw into Bitmap, and than bitmap on canvas
 
@@ -350,6 +382,22 @@ UINT CWorld::Draw(LPVOID pParam)
 	m_pDC->Rectangle(pDC_Rect);
 	m_pDC->SelectObject(pOldBrush);
 	
+	CBrush brushBlack(RGB(0,0,0));
+	pOldBrush =  m_pDC->SelectObject(&brushBlack);
+
+	RECT textbox;
+	textbox.top = textbox.left=10;
+	textbox.right=textbox.bottom=100;
+
+	CString str;
+	str.Format(_T("Iteration : %d"), iteration);
+
+	m_pDC->DrawText(str, &textbox,DT_CENTER );
+
+
+
+	m_pDC->SelectObject(pOldBrush);
+
 	for (auto& Row : m_Grid)
 	{
 		for (auto& Lattice : Row)
@@ -364,7 +412,7 @@ void CWorld::Live(int _steps)
 {
 	for (int i=0; i<(int)_steps; i++)
 	{
-		Draw(NULL);
+		Draw(i);
 		Generate();
 		//Sleep(500);
 	}
@@ -377,13 +425,40 @@ void CWorld::DataToFile()
 	int rows_count = m_Grid.size();
 	int cols_count = m_Grid[0].size();
 
-	for (int i = 2; i < rows_count-2; i++)
+	for (int i = 0; i < rows_count-1; i++)
 	{
-		for (int j = 2; j< cols_count-2; j++)
+		for (int j = 0; j< cols_count-1; j++)
 		{
 			m_outfile << NMath::Abs(rows[i][j]->MacroVelocity()) << "  ";
 		}
 
 		m_outfile << std::endl;
+	}
+}
+
+void CWorld::DrawForColumns()
+{
+	vector<CLattice*> *rows = &m_Grid[0];
+	int rows_count = m_Grid.size();
+	int cols_count = m_Grid[0].size();
+
+	RECT wnd;
+	m_Window->GetClientRect(&wnd);
+
+
+	m_Scale_X = m_Scale_X != (wnd.right - wnd.left)/cols_count ? m_Scale_X : (wnd.right - wnd.left)/cols_count;
+	m_Scale_Y = m_Scale_Y != (wnd.top - wnd.bottom)/rows_count ? m_Scale_Y : (wnd.top - wnd.bottom)/rows_count;
+	
+	for (int i=0; i < cols_count; i++)
+	{
+		CBrush brushWhite(RGB(255, 255, 255));
+		CBrush* pOldBrush = m_pDC->SelectObject(&brushWhite);
+		m_pDC->Rectangle(&wnd);
+		m_pDC->SelectObject(pOldBrush);
+		for (int j=0; j < rows_count; j++)
+		{
+			rows[j][i]->Draw(m_pDC, m_Scale_velocity);
+		}
+		Sleep(100);
 	}
 }

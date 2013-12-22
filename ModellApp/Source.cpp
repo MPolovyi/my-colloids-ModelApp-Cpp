@@ -1,10 +1,7 @@
 #include "stdafx.h"
 #include "Header.h"
 
-
-
-
-UINT MyThreadProc( LPVOID pParam )
+UINT CountLBE( LPVOID pParam )
 {
 
 	CModellAppView* Window = (CModellAppView*)pParam;
@@ -12,11 +9,23 @@ UINT MyThreadProc( LPVOID pParam )
 	RECT Dimens;
 	Window->GetClientRect(&Dimens);
 
-	CWorld* World = new CWorld((int)30, (int)100, Window);
+	CWorld* World = new CWorld((int)20, (int)40, Window);
 
-	World->Live((int)50);
+	World->Live((int)150);
 
 	World->DataToFile();
 	World->Draw(NULL);
+
+	for (int k=0; k<100; k++)
+	{
+		World->DrawForColumns();
+	}
+
+
 	return 0;   // thread completed successfully
+}
+
+UINT CountNumericalNS(LPVOID pParam)
+{
+	return 0;
 }

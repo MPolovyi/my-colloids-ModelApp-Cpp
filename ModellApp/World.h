@@ -5,14 +5,13 @@
 #define IS_BOUNDARY 0x1
 #define IS_TRANSITION 0x2
 #define IS_CORNER 0x4
-
+#define IS_OBSTRACTION 0x8
 
 
 #include "stdafx.h"
 #include "Lattice.h"
 #include "ModellAppView.h"
-#include "Lattices.h"
-
+#include "Different_Lattices.h"
 
 
 
@@ -35,7 +34,7 @@ public:
 	CWorld(int _X, int _Y, CModellAppView* _wnd);
 	~CWorld(void);
 
-	UINT Draw(LPVOID pParam);
+	UINT Draw(int pParam);
 
 	void Initialize();
 
@@ -47,5 +46,7 @@ public:
 	void TimeStep();
 
 	void DataToFile();
+
+	void DrawForColumns();
 };
 

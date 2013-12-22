@@ -90,6 +90,6 @@ CModellAppDoc* CModellAppView::GetDocument() const // non-debug version is inlin
 
 void CModellAppView::OnStartComputation()
 {
-	AfxBeginThread(MyThreadProc,this);
+	AfxBeginThread(CountLBE,this);
 }
 
