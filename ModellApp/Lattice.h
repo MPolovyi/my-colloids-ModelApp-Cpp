@@ -59,14 +59,14 @@ public:
 	vector<double> MacroVelocity();
 
 	void StreamAndCollide();
-
+	virtual void Revert(){};
 protected:
 	void MacroDensity(int x, int y);
 	double* MicroDensity();
 	double* MicroEqDensity();
 	double* Weights();
 	
-	virtual void Revert(){};
+	
 
 	virtual int GetIndexOfTransition(int dx, int dy){return -111;}
 #pragma endregion LBE_methods

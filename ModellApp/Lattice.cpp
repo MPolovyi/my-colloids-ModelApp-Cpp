@@ -36,7 +36,7 @@ CLattice::CLattice(double _x, double _y, DWORD _flag, CDC* _cdc)
 	m_Coord.y = _y + 10;
 
 
-	double OutForce[] = {10,0};
+	double OutForce[] = {1,0};
 	m_outerForce = vector<double>(OutForce, OutForce+2);
 }
 
@@ -62,19 +62,11 @@ CLattice::~CLattice(void)
 
 void CLattice::StreamAndCollide()
 {
-	MicroEqDensity();
 
-	if (m_flags & (IS_TRANSITION ))
-	{
-	}
-	else if (m_flags & (IS_BOUNDARY | IS_OBSTRACTION))
-	{
-		this->Revert();
-	}
 
 	for (int i = 0; i < m_NeighCount; i++)
 	{
-		double collision = (m_microDensity[i]  - m_microEqDensity[i] + m_Force[i])/5;
+		double collision = (m_microDensity[i]  - m_microEqDensity[i] + m_Force[i]);
 		double NewFi = m_microDensity[i] - collision;
 		m_Neighbours[i].first->NewF(NewFi, m_Neighbours[i].second);
 	}
@@ -191,14 +183,7 @@ double* CLattice::MicroEqDensity()
 	double spd[] = {0,0};
 	vector<double> Velocity = vector<double>(spd, spd+2);
 
-	if (m_flags & (IS_BOUNDARY | IS_OBSTRACTION))
-	{
-		auto spd1 = Velocity[0];
-	}
-	else if (m_flags & (IS_TRANSITION | IS_MIDDLE & ~IS_OBSTRACTION))
-	{
-		vector<double> Velocity = MacroVelocity();
-	}
+	Velocity = MacroVelocity();
 	
 	for (int i = 0; i < m_NeighCount; i++)
 	{
@@ -309,16 +294,16 @@ void CLattice::Draw(CDC* pDC, int _scale_velocity)
 
 
 	//Draw micro_densities
-	CPen GreenPen(PS_SOLID, 1, RGB(0, 200, 50));
-	pOldPen2 = pDC->SelectObject(&GreenPen);
-	for (int i=0; i<m_NeighCount; i++)
-	{
-		pDC->MoveTo(m_Coord.x, m_Coord.y);
-		auto f1 = m_Directions[i][0] * m_microDensity[i] * 100;
-		auto f2 = m_Directions[i][1] * m_microDensity[i] * 100;
-		pDC->LineTo(m_Coord.x + f1, m_Coord.y + f2);
-	}
-	pDC->SelectObject(pOldPen2);
+	//CPen GreenPen(PS_SOLID, 1, RGB(0, 200, 50));
+	//pOldPen2 = pDC->SelectObject(&GreenPen);
+	//for (int i=0; i<m_NeighCount; i++)
+	//{
+	//	pDC->MoveTo(m_Coord.x, m_Coord.y);
+	//	auto f1 = m_Directions[i][0] * m_microDensity[i] * 100;
+	//	auto f2 = m_Directions[i][1] * m_microDensity[i] * 100;
+	//	pDC->LineTo(m_Coord.x + f1, m_Coord.y + f2);
+	//}
+	//pDC->SelectObject(pOldPen2);
 
 	pDC->SelectObject(pOldPen);                // Restore the old pen
 	pDC->SelectObject(pOldBrush);              // Restore the old brush

@@ -1,10 +1,33 @@
-﻿Build started 20.12.2013 12:01:01.
-     1>Project "D:\data\4 course\ModellApp\ModellApp\ModellApp.vcxproj" on node 2 (Build target(s)).
+﻿Build started 23.12.2013 10:20:41.
+     1>Project "E:\Users\Maxim\UserData\University\4 course\ModellApp\ModellApp\ModellApp.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\ModellApp.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Source.cpp
-         Source.cpp
+         F:\Program Files\Programming\Visual studio\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\ModellApp_LBE.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Lattice.cpp
+         Lattice.cpp
+     1>Lattice.cpp(35): warning C4244: '=' : conversion from 'double' to 'LONG', possible loss of data
+     1>Lattice.cpp(36): warning C4244: '=' : conversion from 'double' to 'LONG', possible loss of data
+     1>Lattice.cpp(292): warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+     1>e:\users\maxim\userdata\university\4 course\modellapp\modellapp\Math.cpp(26): warning C4018: '<' : signed/unsigned mismatch
+                 Lattice.cpp(97) : see reference to function template instantiation 'double NMath::Abs<double>(std::vector<_Ty>)' being compiled
+                 with
+                 [
+                     _Ty=double
+                 ]
+     1>e:\users\maxim\userdata\university\4 course\modellapp\modellapp\Math.cpp(38): warning C4018: '<' : signed/unsigned mismatch
+                 Lattice.cpp(103) : see reference to function template instantiation 'A NMath::Sum<double>(std::vector<_Ty>)' being compiled
+                 with
+                 [
+                     A=double,
+                     _Ty=double
+                 ]
+     1>e:\users\maxim\userdata\university\4 course\modellapp\modellapp\Math.cpp(13): warning C4018: '<' : signed/unsigned mismatch
+                 Lattice.cpp(123) : see reference to function template instantiation 'double NMath::DotProduct<double,int>(std::vector<_Ty>,std::vector<int>)' being compiled
+                 with
+                 [
+                     _Ty=double
+                 ]
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\data\4 course\ModellApp\Release\ModellApp.exe" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"D:\data\4 course\ModellApp\Release\ModellApp.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\data\4 course\ModellApp\Release\ModellApp.lib" /MACHINE:X86 /SAFESEH Release\ModellApp.res
+         F:\Program Files\Programming\Visual studio\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Users\Maxim\UserData\University\4 course\ModellApp\Release\ModellApp_LBE.exe" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"F:\Program Files\Programming\Visual studio\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"E:\Users\Maxim\UserData\University\4 course\ModellApp\Release\ModellApp_LBE.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Users\Maxim\UserData\University\4 course\ModellApp\Release\ModellApp_LBE.lib" /MACHINE:X86 /SAFESEH Release\ModellApp.res
+         Release\Grid.obj
          Release\Lattice.obj
          Release\Lattices.obj
          Release\MainFrm.obj
@@ -17,9 +40,9 @@
          Release\World.obj
          Generating code
          Finished generating code
-         ModellApp.vcxproj -> D:\data\4 course\ModellApp\Release\ModellApp.exe
-     1>Done Building Project "D:\data\4 course\ModellApp\ModellApp\ModellApp.vcxproj" (Build target(s)).
+         ModellApp.vcxproj -> E:\Users\Maxim\UserData\University\4 course\ModellApp\Release\ModellApp_LBE.exe
+     1>Done Building Project "E:\Users\Maxim\UserData\University\4 course\ModellApp\ModellApp\ModellApp.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:05.17
+Time Elapsed 00:00:01.92

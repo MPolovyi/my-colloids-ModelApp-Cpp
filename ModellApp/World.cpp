@@ -4,6 +4,7 @@
 #include "World.h"
 #include < windows.h >
 
+
 #include <fstream>
 
         /*                   \
@@ -109,7 +110,7 @@ void CWorld::Initialize()
 				continue;
 			}
 			
-			flag = IS_BOUNDARY | IS_TRANSITION;
+			flag =  IS_TRANSITION;
 
 			if (0==x)
 			{
@@ -153,6 +154,18 @@ void CWorld::Initialize()
 	}
 	
 	m_Grid.shrink_to_fit();
+
+	for (auto r : m_Grid)
+	{
+		for (auto l : r)
+		{
+			if (l->m_flags & (IS_BOUNDARY | IS_OBSTRACTION))
+			{
+				m_Reversable.push_back(l);
+			}
+			
+		}
+	}
 
 #pragma region AddNeighbours
 
@@ -321,7 +334,7 @@ void CWorld::Generate()
 	int cols_count = m_Grid[0].size();
 
 
-	long begin = GetTickCount();
+	long Begin_Comp = GetTickCount();
 	
 	parallel_for(0, rows_count, 
 		[cols_count, rows](int i) 
@@ -343,6 +356,10 @@ void CWorld::Generate()
 		});
 	});
 
+	parallel_for_each(begin(m_Reversable), end(m_Reversable), [&](CLattice* ltc){
+		ltc->Revert();
+	});
+
 
 	//for (int i = 1; i < rows_count-1; i++)
 	//{
@@ -360,8 +377,8 @@ void CWorld::Generate()
 	//	}
 	//}
 
-	long End = GetTickCount() - begin;
-	m_outfile << End << std::endl;
+	long End_comp = GetTickCount() - Begin_Comp;
+	m_outfile << End_comp << std::endl;
 }
 
 
@@ -425,9 +442,9 @@ void CWorld::DataToFile()
 	int rows_count = m_Grid.size();
 	int cols_count = m_Grid[0].size();
 
-	for (int i = 0; i < rows_count-1; i++)
+	for (int i = 0; i < rows_count; i++)
 	{
-		for (int j = 0; j< cols_count-1; j++)
+		for (int j = 0; j< cols_count; j++)
 		{
 			m_outfile << NMath::Abs(rows[i][j]->MacroVelocity()) << "  ";
 		}

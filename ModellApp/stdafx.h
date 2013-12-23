@@ -56,6 +56,7 @@ using std::pair;
 
 #include <ppl.h>
 using concurrency::parallel_for;
+using concurrency::parallel_for_each;
 
 const int Coord_Mid[9][2] = {
 	{0, 0},

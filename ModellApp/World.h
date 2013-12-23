@@ -48,5 +48,7 @@ public:
 	void DataToFile();
 
 	void DrawForColumns();
+protected:
+	vector<CLattice*> m_Reversable;
 };
 
