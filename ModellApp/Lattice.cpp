@@ -62,6 +62,8 @@ CLattice::~CLattice(void)
 
 void CLattice::StreamAndCollide()
 {
+	MicroEqDensity();
+
 
 
 	for (int i = 0; i < m_NeighCount; i++)
@@ -183,7 +185,14 @@ double* CLattice::MicroEqDensity()
 	double spd[] = {0,0};
 	vector<double> Velocity = vector<double>(spd, spd+2);
 
-	Velocity = MacroVelocity();
+	if (m_flags & (IS_BOUNDARY | IS_OBSTRACTION))
+	{
+		auto spd1 = Velocity[0];
+	}
+	else if (m_flags & (IS_TRANSITION | IS_MIDDLE & ~IS_OBSTRACTION))
+	{
+		vector<double> Velocity = MacroVelocity();
+	}
 	
 	for (int i = 0; i < m_NeighCount; i++)
 	{
